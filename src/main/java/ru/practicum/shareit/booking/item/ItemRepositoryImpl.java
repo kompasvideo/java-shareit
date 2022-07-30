@@ -15,7 +15,7 @@ import java.util.List;
 public class ItemRepositoryImpl implements ItemRepository {
     private final List<Item> items = new ArrayList<>();
     private final UserService userService;
-    private long delete = 0;
+    private final long delete = 0;
 
     @Override
     public Item save(long userId, Item item) {

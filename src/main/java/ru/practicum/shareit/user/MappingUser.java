@@ -5,7 +5,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 
 @Service
 public class MappingUser {
-    public UserDto mapToUserDto(User user){
+    public UserDto mapToUserDto(User user) {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setName(user.getName());
@@ -13,7 +13,7 @@ public class MappingUser {
         return userDto;
     }
 
-    public User mapToUser(UserDto dto){
+    public User mapToUser(UserDto dto) {
         User user = new User();
         user.setId(dto.getId());
         user.setName(dto.getName());

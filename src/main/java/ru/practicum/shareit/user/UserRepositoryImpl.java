@@ -3,7 +3,6 @@ package ru.practicum.shareit.user;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exceptions.InternalServerError;
 import ru.practicum.shareit.exceptions.ValidationException;
-import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +19,7 @@ class UserRepositoryImpl implements UserRepository {
 
     /**
      * Создание нового user
+     *
      * @param user
      * @return
      */
@@ -33,8 +33,8 @@ class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User update(long id, User user) {
-        for (User fUser: users ) {
-            if (fUser.getId() == id){
+        for (User fUser : users) {
+            if (fUser.getId() == id) {
                 if (user.getEmail() != null) {
                     valid(user);
                     fUser.setEmail(user.getEmail());
@@ -51,8 +51,8 @@ class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User get(long userId) {
-        for (User fUser: users ) {
-            if (fUser.getId() == userId){
+        for (User fUser : users) {
+            if (fUser.getId() == userId) {
                 return fUser;
             }
         }
@@ -62,22 +62,22 @@ class UserRepositoryImpl implements UserRepository {
     @Override
     public void delete(long userId) {
         User user = null;
-        for (User fUser: users ) {
-            if (fUser.getId() == userId){
+        for (User fUser : users) {
+            if (fUser.getId() == userId) {
                 user = fUser;
             }
         }
-        if ( user != null) {
+        if (user != null) {
             users.remove(user);
             delete++;
         }
     }
 
     @Override
-    public boolean checkUser(long userId){
-        for (User fUser: users ) {
-            if (fUser.getId() == userId){
-                if (! fUser.getEmail().equals("")){
+    public boolean checkUser(long userId) {
+        for (User fUser : users) {
+            if (fUser.getId() == userId) {
+                if (!fUser.getEmail().equals("")) {
                     return true;
                 }
             }
@@ -94,17 +94,17 @@ class UserRepositoryImpl implements UserRepository {
     }
 
     private void valid(User user) {
-        for (User fUser: users ) {
-            if (fUser.getEmail().equals(user.getEmail())){
+        for (User fUser : users) {
+            if (fUser.getEmail().equals(user.getEmail())) {
                 throw new InternalServerError("Такой email уже зарегистрирован");
             }
-            if (user.getEmail() == null ){
+            if (user.getEmail() == null) {
                 throw new ValidationException("Email не указан");
             }
-            if (user.getEmail().isEmpty()){
+            if (user.getEmail().isEmpty()) {
                 throw new ValidationException("Email не указан");
             }
-            if(! user.getEmail().contains("@")){
+            if (!user.getEmail().contains("@")) {
                 throw new ValidationException("Ошибка в Email");
             }
         }

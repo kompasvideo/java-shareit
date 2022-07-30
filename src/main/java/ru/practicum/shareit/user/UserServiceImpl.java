@@ -22,6 +22,7 @@ class UserServiceImpl implements UserService {
 
     /**
      * Создание нового user
+     *
      * @param userDto
      * @return
      */
@@ -31,20 +32,22 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    public  UserDto updateUser(long id, UserDto userDto){
+    public UserDto updateUser(long id, UserDto userDto) {
         return mappingUser.mapToUserDto(repository.update(id, mappingUser.mapToUser(userDto)));
     }
 
     @Override
-    public UserDto getUser(long userId){
+    public UserDto getUser(long userId) {
         return mappingUser.mapToUserDto(repository.get(userId));
     }
 
     @Override
-    public void deleteUser(long userId){ repository.delete(userId);}
+    public void deleteUser(long userId) {
+        repository.delete(userId);
+    }
 
     @Override
-    public boolean checkUser(long userId){
+    public boolean checkUser(long userId) {
         return repository.checkUser(userId);
     }
 
