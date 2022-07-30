@@ -1,7 +1,8 @@
 package ru.practicum.shareit.requests;
 
 /**
- * // TODO .
+ * // Класс запрос
  */
+
 public class ItemRequest {
 }
