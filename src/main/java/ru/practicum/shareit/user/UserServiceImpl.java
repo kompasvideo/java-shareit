@@ -2,10 +2,10 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.item.MappingItem;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -14,8 +14,10 @@ class UserServiceImpl implements UserService {
     private final MappingUser mappingUser;
 
     @Override
-    public List<User> getAllUsers() {
-        return repository.findAll();
+    public List<UserDto> getAllUsers() {
+        return repository.findAll().stream()
+            .map(mappingUser::mapToUserDto)
+            .collect(Collectors.toList());
     }
 
     /**
@@ -29,10 +31,14 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    public  User updateUser(long id, User user){ return repository.update(id, user);}
+    public  UserDto updateUser(long id, UserDto userDto){
+        return mappingUser.mapToUserDto(repository.update(id, mappingUser.mapToUser(userDto)));
+    }
 
     @Override
-    public User getUser(long userId){ return repository.get(userId);}
+    public UserDto getUser(long userId){
+        return mappingUser.mapToUserDto(repository.get(userId));
+    }
 
     @Override
     public void deleteUser(long userId){ repository.delete(userId);}

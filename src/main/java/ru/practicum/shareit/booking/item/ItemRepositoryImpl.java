@@ -3,7 +3,6 @@ package ru.practicum.shareit.booking.item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.item.model.Item;
-import ru.practicum.shareit.exceptions.InternalServerError;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.user.UserService;
@@ -22,7 +21,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     public Item save(long userId, Item item) {
         valid(userId, item);
         item.setId(getId());
-        item.setUserId(userId);
+        item.setOwner(userId);
         items.add(item);
         return item;
     }
@@ -32,7 +31,7 @@ public class ItemRepositoryImpl implements ItemRepository {
         Item lItem = new Item();
         for (Item fItem : items) {
             if (fItem.getId() == itemId) {
-                if (fItem.getUserId() == userId) {
+                if (fItem.getOwner() == userId) {
                     if (item.getName() != null) {
                         fItem.setName(item.getName());
                     } else {
@@ -62,7 +61,7 @@ public class ItemRepositoryImpl implements ItemRepository {
         Item lItem = new Item();
         for (Item fItem : items) {
             if (fItem.getId() == itemId) {
-                if (fItem.getUserId() == userId) {
+                if (fItem.getOwner() == userId) {
                     lItem = fItem;
                 } else {
                     throw new NotFoundException("Не тот User");
@@ -76,7 +75,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     public List<Item> getAllItem(long userId) {
         List<Item> lItems = new ArrayList<>();
         for (Item fItem : items) {
-            if (fItem.getUserId() == userId) {
+            if (fItem.getOwner() == userId) {
                 lItems.add(fItem);
             }
         }

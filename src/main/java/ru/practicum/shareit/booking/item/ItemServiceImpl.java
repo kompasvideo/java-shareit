@@ -2,36 +2,42 @@ package ru.practicum.shareit.booking.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.item.model.Item;
+import ru.practicum.shareit.booking.item.dto.ItemDto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService{
     private final ItemRepository repository;
+    private final ItemMapper itemMapper;
     @Override
-    public Item saveItem(long userId, Item item) {
-        return repository.save( userId,item);
+    public ItemDto saveItem(long userId, ItemDto itemDto) {
+        return itemMapper.toItemDto(repository.save( userId, itemMapper.toItem(itemDto)));
     }
 
     @Override
-    public Item updateItem(long userId, long itemId, Item item){
-        return repository.updateItem(userId, itemId, item);
+    public ItemDto updateItem(long userId, long itemId, ItemDto itemDto){
+        return itemMapper.toItemDto(repository.updateItem(userId, itemId, itemMapper.toItem(itemDto)));
     }
 
     @Override
-    public Item getItem(long userId, long itemId){
-        return repository.getItem(userId, itemId);
+    public ItemDto getItem(long userId, long itemId){
+        return itemMapper.toItemDto(repository.getItem(userId, itemId));
     }
 
     @Override
-    public List<Item> getAllItem(long userId){
-        return repository.getAllItem(userId);
+    public List<ItemDto> getAllItem(long userId){
+        return repository.getAllItem(userId).stream()
+            .map(itemMapper::toItemDto)
+            .collect(Collectors.toList());
     }
 
     @Override
-    public List<Item> searchItem(long userId, String text){
-        return repository.searchItem( userId, text);
+    public List<ItemDto> searchItem(long userId, String text){
+        return repository.searchItem( userId, text).stream()
+            .map(itemMapper::toItemDto)
+            .collect(Collectors.toList());
     }
 }

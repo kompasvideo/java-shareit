@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.item.model;
 
 import lombok.Data;
+import ru.practicum.shareit.requests.ItemRequest;
 
 /**
  * // Класс вещь
@@ -11,5 +12,6 @@ public class Item {
     private String name;
     private String description;
     private Boolean available;
-    private transient long userId;
+    private transient long owner;
+    private ItemRequest itemRequest;
 }

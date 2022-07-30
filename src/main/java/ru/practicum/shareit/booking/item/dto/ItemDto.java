@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.item.dto;
 
 import lombok.Data;
+import ru.practicum.shareit.requests.ItemRequest;
 
 /**
  * // DTO для Item
@@ -11,5 +12,6 @@ public class ItemDto {
     private String name;
     private String description;
     private Boolean available;
-    private transient long userId;
+    private transient long owner;
+    private ItemRequest itemRequest;
 }

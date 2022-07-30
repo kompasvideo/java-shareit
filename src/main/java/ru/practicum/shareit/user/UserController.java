@@ -26,17 +26,17 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public User updateUser(@PathVariable long id,@RequestBody User user) {
-        return userService.updateUser(id,user);
+    public UserDto updateUser(@PathVariable long id,@RequestBody UserDto userDto) {
+        return userService.updateUser(id,userDto);
     }
 
     @GetMapping("/{id}")
-    public User getUser(@PathVariable long id){
+    public UserDto getUser(@PathVariable long id){
         return userService.getUser(id);
     }
 
     @GetMapping
-    public List<User> getAllUsers(){
+    public List<UserDto> getAllUsers(){
         return userService.getAllUsers();
     }
 

@@ -1,14 +1,15 @@
 package ru.practicum.shareit.booking.item;
 
 import org.springframework.web.bind.annotation.RequestBody;
+import ru.practicum.shareit.booking.item.dto.ItemDto;
 import ru.practicum.shareit.booking.item.model.Item;
 
 import java.util.List;
 
 interface ItemService {
-    Item saveItem(long userId, Item item);
-    Item updateItem(long userId, long itemId, Item item);
-    Item getItem(long userId, long itemId);
-    List<Item> getAllItem(long userId);
-    List<Item> searchItem(long userId, String text);
+    ItemDto saveItem(long userId, ItemDto itemDto);
+    ItemDto updateItem(long userId, long itemId, ItemDto itemDto);
+    ItemDto getItem(long userId, long itemId);
+    List<ItemDto> getAllItem(long userId);
+    List<ItemDto> searchItem(long userId, String text);
 }

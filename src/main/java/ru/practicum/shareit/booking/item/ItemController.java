@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.booking.item.dto.ItemDto;
 import ru.practicum.shareit.booking.item.model.Item;
 import ru.practicum.shareit.user.User;
 
@@ -17,29 +18,29 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public Item add(@RequestHeader("X-Sharer-User-Id") long userId,
-                            @RequestBody Item item) {
-        return itemService.saveItem(userId, item);
+    public ItemDto add(@RequestHeader("X-Sharer-User-Id") long userId,
+                            @RequestBody ItemDto itemDto) {
+        return itemService.saveItem(userId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
-    public Item updateItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
-                           @RequestBody Item item) {
-        return itemService.updateItem(userId,itemId, item);
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
+                           @RequestBody ItemDto itemDto) {
+        return itemService.updateItem(userId,itemId, itemDto);
     }
 
     @GetMapping("/{itemId}")
-    public Item getItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId){
+    public ItemDto getItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId){
         return itemService.getItem(userId, itemId);
     }
 
     @GetMapping
-    public List<Item> getAllItem(@RequestHeader("X-Sharer-User-Id") long userId){
+    public List<ItemDto> getAllItem(@RequestHeader("X-Sharer-User-Id") long userId){
         return itemService.getAllItem(userId);
     }
 
     @GetMapping("/search")
-    public List<Item> searchItem(@RequestHeader("X-Sharer-User-Id") long userId, @RequestParam String text){
+    public List<ItemDto> searchItem(@RequestHeader("X-Sharer-User-Id") long userId, @RequestParam String text){
         return itemService.searchItem(userId, text);
     }
 }
