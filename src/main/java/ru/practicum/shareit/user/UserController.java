@@ -17,6 +17,7 @@ public class UserController {
 
     /**
      * Создание нового user
+     *
      * @param userDto
      * @return
      */
@@ -26,22 +27,22 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public UserDto updateUser(@PathVariable long id,@RequestBody UserDto userDto) {
-        return userService.updateUser(id,userDto);
+    public UserDto updateUser(@PathVariable long id, @RequestBody UserDto userDto) {
+        return userService.updateUser(id, userDto);
     }
 
     @GetMapping("/{id}")
-    public UserDto getUser(@PathVariable long id){
+    public UserDto getUser(@PathVariable long id) {
         return userService.getUser(id);
     }
 
     @GetMapping
-    public List<UserDto> getAllUsers(){
+    public List<UserDto> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable long id){
+    public void deleteUser(@PathVariable long id) {
         userService.deleteUser(id);
     }
 }

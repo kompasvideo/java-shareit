@@ -10,12 +10,17 @@ public interface UserService {
 
     /**
      * Создание нового user
+     *
      * @param userDto
      * @return
      */
     UserDto saveUser(UserDto userDto);
+
     UserDto updateUser(long id, UserDto userDto);
+
     UserDto getUser(long userId);
+
     void deleteUser(long userId);
+
     boolean checkUser(long userId);
 }

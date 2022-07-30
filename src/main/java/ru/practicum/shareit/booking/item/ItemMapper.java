@@ -6,7 +6,7 @@ import ru.practicum.shareit.booking.item.model.Item;
 
 @Service
 public class ItemMapper {
-    public ItemDto toItemDto(Item item){
+    public ItemDto toItemDto(Item item) {
         ItemDto itemDto = new ItemDto();
         itemDto.setId(item.getId());
         itemDto.setName(item.getName());
@@ -17,7 +17,7 @@ public class ItemMapper {
         return itemDto;
     }
 
-    public Item toItem(ItemDto dto){
+    public Item toItem(ItemDto dto) {
         Item item = new Item();
         item.setId(dto.getId());
         item.setName(dto.getName());
