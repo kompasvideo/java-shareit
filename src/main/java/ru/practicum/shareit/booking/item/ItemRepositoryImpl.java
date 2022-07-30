@@ -61,11 +61,11 @@ public class ItemRepositoryImpl implements ItemRepository {
         Item lItem = new Item();
         for (Item fItem : items) {
             if (fItem.getId() == itemId) {
-                if (fItem.getOwner() == userId) {
+//                if (fItem.getOwner() == userId) {
                     lItem = fItem;
-                } else {
-                    throw new NotFoundException("Не тот User");
-                }
+//                } else {
+//                    throw new NotFoundException("Не тот User");
+//                }
             }
         }
         return lItem;
@@ -90,7 +90,9 @@ public class ItemRepositoryImpl implements ItemRepository {
         }
         for (Item fItem : items) {
             if (fItem.getDescription().toLowerCase().lastIndexOf(text.toLowerCase()) >= 0) {
-                lItems.add(fItem);
+                if (fItem.getAvailable()) {
+                    lItems.add(fItem);
+                }
             }
         }
         return lItems;
