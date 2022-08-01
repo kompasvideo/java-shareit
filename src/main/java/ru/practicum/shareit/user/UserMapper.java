@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.dto.UserDto;
 
 @Service
-public class MappingUser {
+public class UserMapper {
     public UserDto mapToUserDto(User user) {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());

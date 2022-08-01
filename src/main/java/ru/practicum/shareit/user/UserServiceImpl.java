@@ -11,12 +11,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 class UserServiceImpl implements UserService {
     private final UserRepository repository;
-    private final MappingUser mappingUser;
+    private final UserMapper userMapper;
 
     @Override
     public List<UserDto> getAllUsers() {
         return repository.findAll().stream()
-            .map(mappingUser::mapToUserDto)
+            .map(userMapper::mapToUserDto)
             .collect(Collectors.toList());
     }
 
@@ -28,17 +28,17 @@ class UserServiceImpl implements UserService {
      */
     @Override
     public UserDto saveUser(UserDto userDto) {
-        return mappingUser.mapToUserDto(repository.save(mappingUser.mapToUser(userDto)));
+        return userMapper.mapToUserDto(repository.save(userMapper.mapToUser(userDto)));
     }
 
     @Override
     public UserDto updateUser(long id, UserDto userDto) {
-        return mappingUser.mapToUserDto(repository.update(id, mappingUser.mapToUser(userDto)));
+        return userMapper.mapToUserDto(repository.update(id, userMapper.mapToUser(userDto)));
     }
 
     @Override
     public UserDto getUser(long userId) {
-        return mappingUser.mapToUserDto(repository.get(userId));
+        return userMapper.mapToUserDto(repository.get(userId));
     }
 
     @Override

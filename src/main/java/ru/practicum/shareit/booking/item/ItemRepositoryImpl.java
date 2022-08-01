@@ -61,11 +61,7 @@ public class ItemRepositoryImpl implements ItemRepository {
         Item lItem = new Item();
         for (Item fItem : items) {
             if (fItem.getId() == itemId) {
-//                if (fItem.getOwner() == userId) {
-                    lItem = fItem;
-//                } else {
-//                    throw new NotFoundException("Не тот User");
-//                }
+                lItem = fItem;
             }
         }
         return lItem;
@@ -124,7 +120,6 @@ public class ItemRepositoryImpl implements ItemRepository {
         }
         if (item.getDescription().isEmpty()) {
             throw new ValidationException("Description не указан");
-
         }
     }
 }
