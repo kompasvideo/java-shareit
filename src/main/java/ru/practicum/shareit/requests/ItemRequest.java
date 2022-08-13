@@ -1,15 +1,11 @@
 package ru.practicum.shareit.requests;
 
-import lombok.*;
-import org.hibernate.Hibernate;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.dto.UserDto;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**

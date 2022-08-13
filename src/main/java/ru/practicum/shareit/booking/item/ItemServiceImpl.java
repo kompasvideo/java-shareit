@@ -32,7 +32,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional
     @Override
-    public ItemDto create(ItemDto itemDto, Long userId) {
+    public ItemDto saveItem(long userId, ItemDto itemDto) {
         validateWhenSaveItem(itemDto, userId);
         Item item = ItemMapper.toItem(itemDto);
         item.setOwnerId(userId);
