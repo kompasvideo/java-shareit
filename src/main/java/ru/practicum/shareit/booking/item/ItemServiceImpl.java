@@ -32,7 +32,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional
     @Override
-    public ItemDto create(ItemDto itemDto, Long userId) {
+    public ItemDto saveItem(long userId, ItemDto itemDto) {
         validateWhenSaveItem(itemDto, userId);
         Item item = ItemMapper.toItem(itemDto);
         item.setOwnerId(userId);
@@ -43,7 +43,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional
     @Override
-    public ItemDto update(ItemDto itemDto, Long userId, Long itemId) {
+    public ItemDto update(long userId, long itemId, ItemDto itemDto) {
         validateWhenUpdateItem(userId, itemId);
         Item item = itemRepository.findById(itemId).get();
         if (itemDto.getName() != null)
@@ -59,7 +59,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional(readOnly = true)
     @Override
-    public ItemFoundDto findByUserIdAndItemId(Long userId, Long itemId) {
+    public ItemFoundDto getItem(long userId, long itemId) {
         checkUserById(userId);
         checkItemById(itemId);
         Item foundItem = itemRepository.findById(itemId).get();
@@ -83,7 +83,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ItemFoundDto> findAllItemsByUserId(Long userId) {
+    public List<ItemFoundDto> getAllItem(long userId) {
         checkUserById(userId);
         log.info("Все вещи успешно найдены у пользователя id = {}", userId);
         List<Item> items = itemRepository.findAllByOwnerId(userId);
@@ -107,7 +107,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ItemDto> findItemByText(Long userId, String text) {
+    public List<ItemDto> searchItem(long userId, String text) {
         checkUserById(userId);
         if (text.isBlank())
             return new ArrayList<>();
@@ -115,23 +115,17 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.toItemsDto(itemRepository.findItemsByText(text));
     }
 
-    // Метод для обработки и возврата инициализированного класса ItemFoundDto
     private ItemFoundDto getItemFoundDto(Item foundItem, Long userId) {
-        // Найдем две ближайшие аренды
         List<Booking> bookings = bookingRepository.findTwoBookingByOwnerIdOrderByEndAsc(userId, foundItem.getId());
-        // если получено две аренды: предыдущая и следующая.
         if (bookings.size() >= 2) {
             return ItemMapper.toItemFoundDto(foundItem,
                 new ItemFoundDto.LastBooking(bookings.get(0)),
                 new ItemFoundDto.NextBooking(bookings.get(1)));
-            // если получена только аренда
         } else if (bookings.size() == 1) {
-            // если аренда является предыдущей
             if (bookings.get(0).getStart().isBefore(LocalDateTime.now())) {
                 return ItemMapper.toItemFoundDto(foundItem,
                     new ItemFoundDto.LastBooking(bookings.get(0)),
                     null);
-                // если аренда является следующей
             } else {
                 return ItemMapper.toItemFoundDto(foundItem,
                     null,
@@ -145,17 +139,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private ItemFoundDto getItemFoundDto(Item foundItem, Long userId, List<CommentDto> commentsDto) {
-        // Найдем две ближайшие аренды
         List<Booking> bookings = bookingRepository.findTwoBookingByOwnerIdOrderByEndAsc(userId, foundItem.getId());
-        // если получено две аренды: предыдущая и следующая.
         if (bookings.size() == 2) {
             return ItemMapper.toItemFoundDto(foundItem,
                 new ItemFoundDto.LastBooking(bookings.get(0)),
                 new ItemFoundDto.NextBooking(bookings.get(1)),
                 commentsDto);
-            // если получена только аренда
         } else if (bookings.size() == 1) {
-            // если аренда является предыдущей
             if (bookings.get(0).getStart().isBefore(LocalDateTime.now())) {
                 return ItemMapper.toItemFoundDto(foundItem,
                     new ItemFoundDto.LastBooking(bookings.get(0)),
@@ -176,7 +166,6 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-    // Метод для проверок при создании предмета
     private void validateWhenSaveItem(ItemDto itemDto, Long userId) {
         checkUserById(userId);
         if (itemDto.getAvailable() == null) {
@@ -220,7 +209,6 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-    // Метод для проверок при обновлении предмета
     private void validateWhenUpdateItem(Long userId, Long itemId) {
         checkUserById(userId);
         if (itemRepository.findItemsByOwnerId(userId) == null) {
@@ -233,7 +221,6 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-    // Метод для проверки существования пользователя
     private void checkUserById(Long userId) {
         if (userRepository.findById(userId).isEmpty()) {
             log.warn("Пользователь с id = {} не найден", userId);
