@@ -6,18 +6,21 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Map;
+
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
+
     /**
-     * Ошибка валидации, код 400
-     * Validation error
+     * Прочие исключения, код 500
+     * Other exception
      *
      * @param e
      * @return
      */
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleIncorrectParameterException(final ValidationException e) {
         log.warn(e.getMessage());
         return new ErrorResponse(e.getMessage());
@@ -38,16 +41,22 @@ public class ErrorHandler {
     }
 
     /**
-     * Прочие исключения, код 500
-     * Other exception
+     * Ошибка валидации, код 400
+     * Validation error
      *
      * @param e
      * @return
      */
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleIncorrectParameterException(final InternalServerError e) {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleIncorrectParameterException(final BadRequestException e) {
         log.warn(e.getMessage());
         return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Map<String, String> handleForbiddenException(final ForbiddenException e) {
+        return Map.of("error", e.getMessage());
     }
 }

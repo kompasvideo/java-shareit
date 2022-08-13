@@ -1,17 +1,24 @@
 package ru.practicum.shareit.booking.item;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ru.practicum.shareit.booking.item.model.Item;
 
 import java.util.List;
 
-public interface ItemRepository {
-    Item save(long userId, Item item);
+public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    Item updateItem(long userId, long itemId, Item item);
+    //Метод для поиска предмета по тексту
+    @Query("select it from Item as it" +
+        " where (upper(it.name) like concat('%', upper(:text), '%' ) " +
+        " or upper(it.description) like concat('%', upper(:text), '%' ))" +
+        " and it.available = true")
+    List<Item> findItemsByText(@Param("text") String text);
 
-    Item getItem(long userId, long itemId);
+    //Метод для поиска предмета по id владельца
+    List<Item> findItemsByOwnerId(Long userId);
 
-    List<Item> getAllItem(long userId);
-
-    List<Item> searchItem(long userId, String text);
+    //Метод для поиска предметов по id владельца
+    List<Item> findAllByOwnerId(Long userId);
 }

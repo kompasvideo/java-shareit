@@ -1,20 +1,56 @@
 package ru.practicum.shareit.booking;
 
-import lombok.Data;
-import ru.practicum.shareit.booking.item.dto.ItemDto;
-import ru.practicum.shareit.user.dto.UserDto;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import ru.practicum.shareit.Status;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-/**
- * // класс бронирования
- */
-@Data
+@Entity
+@Getter
+@Setter
+@ToString
+@Table(name = "bookings")
 public class Booking {
-    private long id;
-    private LocalDateTime start;
-    private LocalDateTime end;
-    private ItemDto item;
-    private UserDto booker;
-    private Status status;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "start_date_time")
+    private LocalDateTime start; // дата начала бронирования
+
+    @Column(name = "end_date_time")
+    private LocalDateTime end; // дата конца бронирования
+
+    @Column(name = "item_id")
+    private Long itemId; // id вещи, которую пользователь бронирует;
+
+    @Column(name = "booker_id")
+    private Long bookerId; // id пользователя, который осуществляет бронирование;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private Status status = Status.WAITING; // статус бронирования
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Booking booking = (Booking) o;
+        return Objects.equals(id, booking.id)
+            && Objects.equals(start, booking.start)
+            && Objects.equals(end, booking.end)
+            && Objects.equals(itemId, booking.itemId)
+            && Objects.equals(bookerId, booking.bookerId)
+            && status == booking.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, start, end, itemId, bookerId, status);
+    }
 }
