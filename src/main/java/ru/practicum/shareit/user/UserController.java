@@ -14,24 +14,25 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
+    /**
+     * Создание нового user
+     *
+     * @param user
+     * @return
+     */
     @PostMapping
-    public User createNewUser(@RequestBody User user) {
-        return userService.save(user);
+    public User saveNewUser(@RequestBody User user) {
+        return userService.saveUser(user);
     }
 
     @PatchMapping("/{id}")
-    public User updateUser(@PathVariable("id") Long userId, @RequestBody User updatedUser) {
-        return userService.update(userId, updatedUser);
+    public User updateUser(@PathVariable long id, @RequestBody User user) {
+        return userService.updateUser(id, user);
     }
 
     @GetMapping("/{id}")
-    public User findUserById(@PathVariable("id") Long userId) {
-        return userService.findUserById(userId);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteUserById(@PathVariable("id") Long userId) {
-        userService.deleteUserById(userId);
+    public User getUser(@PathVariable long id) {
+        return userService.getUser(id);
     }
 
     @GetMapping
@@ -39,6 +40,10 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable long id) {
+        userService.deleteUser(id);
+    }
 }
 
 

@@ -14,22 +14,22 @@ public class BookingDto {
     private LocalDateTime end;
     private Status status;
     private Item item;
-    private Booker booker;
+    private Book booker;
 
     public static class Item {
-        public Long id;
+        public long id;
         public String name;
 
-        public Item(Long id, String name) {
+        public Item(long id, String name) {
             this.id = id;
             this.name = name;
         }
     }
 
-    public static class Booker {
-        public Long id;
+    public static class Book {
+        public long id;
 
-        public Booker(Long id) {
+        public Book(long id) {
             this.id = id;
         }
     }

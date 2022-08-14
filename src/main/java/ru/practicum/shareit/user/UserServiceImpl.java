@@ -17,86 +17,74 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
-    @Transactional
-    @Override
-    public User save(User user) {
-        validate(user);
-        log.debug("Пользователь под id = {} успешно сохранен.", user.getId());
-        return userRepository.save(user);
-    }
-
-    @Transactional
-    @Override
-    public User update(Long userId, User updatedUser) {
-        validateForUpdateUser(userId, updatedUser);
-        User user = userRepository.findById(userId).get();
-        if (updatedUser.getName() != null)
-            user.setName(updatedUser.getName());
-        if (updatedUser.getEmail() != null)
-            user.setEmail(updatedUser.getEmail());
-        log.debug("Пользователь под id = {} успешно обновлен.", userId);
-        return userRepository.save(user);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public User findUserById(Long userId) {
-        checkUserId(userId);
-        log.debug("Пользователь под id = {} успешно найден.", userId);
-        return userRepository.findById(userId).get();
-    }
-
-    @Transactional
-    @Override
-    public void deleteUserById(Long userId) {
-        checkUserId(userId);
-        log.debug("Пользователь под id = {} успешно удален.", userId);
-        userRepository.deleteById(userId);
-    }
-
     @Transactional(readOnly = true)
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    // Метод для проверок при создании пользователя
+    @Transactional
+    @Override
+    public User saveUser(User user) {
+        validate(user);
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    @Override
+    public User updateUser(long userId, User updatedUser) {
+        validateForUpdateUser(userId, updatedUser);
+        User user = userRepository.findById(userId).get();
+        if (updatedUser.getName() != null)
+            user.setName(updatedUser.getName());
+        if (updatedUser.getEmail() != null)
+            user.setEmail(updatedUser.getEmail());
+        return userRepository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public User getUser(long userId) {
+        userIdValidate(userId);
+        return userRepository.findById(userId).get();
+    }
+
+    @Transactional
+    @Override
+    public void deleteUser(long userId) {
+        userIdValidate(userId);
+        userRepository.deleteById(userId);
+    }
+
+
     private void validate(@Valid User user) {
-        if (user.getName().isBlank()) {
-            log.warn("Имя у пользователя id = {} не может быть пустым", user.getId());
-            throw new ValidationException("Имя у пользователя не может быть пустым");
-        }
         if (user.getEmail() == null || user.getEmail().isBlank()) {
-            log.warn("Email у пользователя id = {} не может быть пустым", user.getId());
-            throw new BadRequestException("Email у пользователя не может быть пустым");
+            throw new BadRequestException("email не может быть пустым");
         }
         if (!user.getEmail().contains("@")) {
-            log.warn("Email у пользователя id = {} не имеет @", user.getId());
-            throw new BadRequestException("Email у пользователя не имеет @");
+            throw new BadRequestException("email не имеет @");
+        }
+        if (user.getName().isBlank()) {
+            throw new ValidationException("Имя не может быть пустым");
         }
     }
 
-    // Метод для проверок при обновлении пользователя
     private void validateForUpdateUser(Long userId, User user) {
-        checkUserId(userId);
+        userIdValidate(userId);
         if (user.getEmail() != null) {
-            checkEmailUser(user.getEmail());
+            emailValidate(user.getEmail());
         }
     }
 
-    // Метод для проверки email пользователя
-    private void checkEmailUser(String email) {
+    private void emailValidate(String email) {
         if (userRepository.findAll().stream().anyMatch(user -> user.getEmail().equals(email))) {
-            log.warn("Такой email занят другим пользователем");
-            throw new ValidationException("Такой email занят другим пользователем");
+            throw new ValidationException("email уже существует");
         }
     }
 
-    // Метод проверка существования пользователя
-    private void checkUserId(Long userId) {
+    private void userIdValidate(Long userId) {
         if (userRepository.findById(userId).isEmpty()) {
-            log.warn("Пользователь с id = {} не найден", userId);
-            throw new NotFoundException("Пользователь с id = " + userId + " не найден");
+            throw new NotFoundException("Юзер не найден, id = " + userId);
         }
     }
 }

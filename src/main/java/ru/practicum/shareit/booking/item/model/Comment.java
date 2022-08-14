@@ -1,18 +1,17 @@
 package ru.practicum.shareit.booking.item.model;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Entity
 @Getter
 @Setter
 @ToString
+@Entity
 @Table(name = "comments")
 public class Comment {
     @Id
@@ -33,17 +32,13 @@ public class Comment {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Comment comment = (Comment) o;
-        return Objects.equals(id, comment.id)
-            && Objects.equals(text, comment.text)
-            && Objects.equals(itemId, comment.itemId)
-            && Objects.equals(userId, comment.userId)
-            && Objects.equals(created, comment.created);
+        return id != null && Objects.equals(id, comment.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, itemId, userId, created);
+        return getClass().hashCode();
     }
 }

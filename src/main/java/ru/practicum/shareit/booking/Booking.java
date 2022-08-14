@@ -1,9 +1,11 @@
 package ru.practicum.shareit.booking;
 
 import lombok.*;
+import org.hibernate.Hibernate;
 import ru.practicum.shareit.Status;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -18,9 +20,11 @@ public class Booking {
     private Long id;
 
     @Column(name = "start_date_time")
+    @NotNull
     private LocalDateTime start;
 
     @Column(name = "end_date_time")
+    @NotNull
     private LocalDateTime end;
 
     @Column(name = "item_id")
@@ -36,18 +40,13 @@ public class Booking {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Booking booking = (Booking) o;
-        return Objects.equals(id, booking.id)
-            && Objects.equals(start, booking.start)
-            && Objects.equals(end, booking.end)
-            && Objects.equals(itemId, booking.itemId)
-            && Objects.equals(bookerId, booking.bookerId)
-            && status == booking.status;
+        return id != null && Objects.equals(id, booking.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, start, end, itemId, bookerId, status);
+        return getClass().hashCode();
     }
 }

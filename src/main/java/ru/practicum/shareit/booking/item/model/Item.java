@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking.item.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -24,10 +25,10 @@ public class Item {
 
     private String description;
 
-    private Boolean available; // статус о том, доступна или нет вещь для аренды
+    private Boolean available;
 
     @Column(name = "owner_id")
-    private Long ownerId; // id владелец
+    private Long ownerId;
 
     @Column(name = "request_id")
     private Long requestId;
@@ -35,18 +36,13 @@ public class Item {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Item item = (Item) o;
-        return Objects.equals(id, item.id)
-            && Objects.equals(name, item.name)
-            && Objects.equals(description, item.description)
-            && Objects.equals(available, item.available)
-            && Objects.equals(ownerId, item.ownerId)
-            && Objects.equals(requestId, item.requestId);
+        return id != null && Objects.equals(id, item.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, available, ownerId, requestId);
+        return getClass().hashCode();
     }
 }
