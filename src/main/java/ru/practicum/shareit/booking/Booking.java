@@ -1,19 +1,16 @@
 package ru.practicum.shareit.booking;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import ru.practicum.shareit.Status;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Entity
 @Getter
 @Setter
 @ToString
+@Entity
 @Table(name = "bookings")
 public class Booking {
     @Id
@@ -21,20 +18,20 @@ public class Booking {
     private Long id;
 
     @Column(name = "start_date_time")
-    private LocalDateTime start; // дата начала бронирования
+    private LocalDateTime start;
 
     @Column(name = "end_date_time")
-    private LocalDateTime end; // дата конца бронирования
+    private LocalDateTime end;
 
     @Column(name = "item_id")
-    private Long itemId; // id вещи, которую пользователь бронирует;
+    private Long itemId;
 
     @Column(name = "booker_id")
-    private Long bookerId; // id пользователя, который осуществляет бронирование;
+    private Long bookerId;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private Status status = Status.WAITING; // статус бронирования
+    private Status status = Status.WAITING;
 
     @Override
     public boolean equals(Object o) {

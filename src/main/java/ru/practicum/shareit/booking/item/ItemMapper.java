@@ -3,7 +3,7 @@ package ru.practicum.shareit.booking.item;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.item.dto.CommentDto;
 import ru.practicum.shareit.booking.item.dto.ItemDto;
-import ru.practicum.shareit.booking.item.dto.ItemFoundDto;
+import ru.practicum.shareit.booking.item.dto.OwnerItemDto;
 import ru.practicum.shareit.booking.item.model.Item;
 
 import java.util.ArrayList;
@@ -35,11 +35,11 @@ public class ItemMapper {
         return itemsDto;
     }
 
-    public static ItemFoundDto toItemFoundDto(Item item,
-                                              ItemFoundDto.LastBooking lastBooking,
-                                              ItemFoundDto.NextBooking nextBooking,
+    public static OwnerItemDto toItemFoundDto(Item item,
+                                              OwnerItemDto.LastBooking lastBooking,
+                                              OwnerItemDto.NextBooking nextBooking,
                                               List<CommentDto> commentsDto) {
-        ItemFoundDto itemDto = new ItemFoundDto();
+        OwnerItemDto itemDto = new OwnerItemDto();
         itemDto.setId(item.getId());
         itemDto.setName(item.getName());
         itemDto.setDescription(item.getDescription());
@@ -54,10 +54,10 @@ public class ItemMapper {
         return itemDto;
     }
 
-    public static ItemFoundDto toItemFoundDto(Item item,
-                                              ItemFoundDto.LastBooking lastBooking,
-                                              ItemFoundDto.NextBooking nextBooking) {
-        ItemFoundDto itemDto = new ItemFoundDto();
+    public static OwnerItemDto toItemFoundDto(Item item,
+                                              OwnerItemDto.LastBooking lastBooking,
+                                              OwnerItemDto.NextBooking nextBooking) {
+        OwnerItemDto itemDto = new OwnerItemDto();
         itemDto.setId(item.getId());
         itemDto.setName(item.getName());
         itemDto.setDescription(item.getDescription());

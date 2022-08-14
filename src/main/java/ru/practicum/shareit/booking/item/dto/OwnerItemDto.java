@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ItemFoundDto {
+public class OwnerItemDto {
     private Long id;
     private String name;
     private String description;
