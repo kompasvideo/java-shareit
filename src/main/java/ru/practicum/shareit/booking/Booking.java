@@ -3,6 +3,8 @@ package ru.practicum.shareit.booking;
 import lombok.*;
 import org.hibernate.Hibernate;
 import ru.practicum.shareit.Status;
+import ru.practicum.shareit.booking.item.model.Item;
+import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -27,11 +29,11 @@ public class Booking {
     @NotNull
     private LocalDateTime end;
 
-    @Column(name = "item_id")
-    private Long itemId;
+    @ManyToOne
+    private Item item;
 
-    @Column(name = "booker_id")
-    private Long bookerId;
+    @ManyToOne
+    private User booker;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default

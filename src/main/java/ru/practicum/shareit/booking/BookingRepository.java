@@ -13,16 +13,12 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllByBookerIdAndStatusOrderByEndDesc(Long bookerId, Status status);
 
     @Query("select b from Booking as b" +
-        " join Item as i on i.id = b.itemId" +
+        " join Item as i on i.id = b.item.id" +
         " where i.ownerId = :ownerId" +
         " order by b.end desc ")
     List<Booking> findAllByOwnerIdOrderByEndDesc(@Param("ownerId") Long ownerId);
 
-    @Query("select b from Booking as b" +
-        " join Item as i on i.id = b.itemId" +
-        " where i.ownerId = :ownerId and b.status = :status" +
-        " order by b.end desc ")
-    List<Booking> findAllByOwnerIdAndStatusOrderByEndDesc(@Param("ownerId") Long ownerId, @Param("status") Status status);
+    List<Booking> findAllByItemOwnerIdAndStatusOrderByStartDesc(Long userId, Status waiting);
 
     @Query(value = "SELECT * from BOOKINGS b " +
         " JOIN ITEMS I ON I.ID = b.ITEM_ID" +

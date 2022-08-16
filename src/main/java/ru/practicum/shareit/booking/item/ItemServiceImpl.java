@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.Status;
@@ -28,6 +29,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ModelMapper modelMapper;
 
     @Transactional
     @Override
@@ -62,10 +64,14 @@ public class ItemServiceImpl implements ItemService {
         Item foundItem = itemRepository.findById(itemId).get();
         List<CommentDto> commentsDto = new ArrayList<>();
         List<Comment> comments = commentRepository.findAllByItemId(itemId);
-        comments.forEach(comment -> commentsDto.add(CommentMapper.toCommentDto(
-            comment,
-            userRepository.findById(comment.getUserId()).get().getName())
-        ));
+        for (Comment comment : comments) {
+            CommentDto commentDto = new CommentDto();
+            commentDto.setId(comment.getId());
+            commentDto.setText(comment.getText());
+            commentDto.setAuthorName(userRepository.findById(comment.getUserId()).get().getName());
+            commentDto.setCreated(comment.getCreated());
+            commentsDto.add(commentDto);
+        }
         if (foundItem.getOwnerId().equals(userId)) {
             return getItemFoundDto(foundItem, userId, commentsDto);
         }
@@ -101,7 +107,12 @@ public class ItemServiceImpl implements ItemService {
         comment.setItemId(itemId);
         comment.setUserId(userId);
         commentRepository.save(comment);
-        return CommentMapper.toCommentDto(comment, userRepository.findById(userId).get().getName());
+        CommentDto commentDto = modelMapper.map(comment, CommentDto.class);
+        commentDto.setId(comment.getId());
+        commentDto.setText(comment.getText());
+        commentDto.setAuthorName(userRepository.findById(userId).get().getName());
+        commentDto.setCreated(comment.getCreated());
+        return commentDto;
     }
 
 

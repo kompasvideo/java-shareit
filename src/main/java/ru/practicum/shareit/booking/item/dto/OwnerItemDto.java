@@ -27,7 +27,7 @@ public class OwnerItemDto {
 
         public LastBooking(Booking booking) {
             this.id = booking.getId();
-            this.bookerId = booking.getBookerId();
+            this.bookerId = booking.getBooker().getId();
         }
     }
 
@@ -37,7 +37,7 @@ public class OwnerItemDto {
 
         public NextBooking(Booking booking) {
             this.id = booking.getId();
-            this.bookerId = booking.getBookerId();
+            this.bookerId = booking.getBooker().getId();
         }
     }
 }
