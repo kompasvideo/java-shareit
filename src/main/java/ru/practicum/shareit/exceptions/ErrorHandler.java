@@ -21,7 +21,7 @@ public class ErrorHandler {
      */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleIncorrectParameterException(final ValidationException e) {
+    public ErrorResponse handleIncorrectParameterException(final Throwable e) {
         log.warn(e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
@@ -47,9 +47,9 @@ public class ErrorHandler {
      * @param e
      * @return
      */
-    @ExceptionHandler
+    @ExceptionHandler({BadRequestException.class, ValidationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleIncorrectParameterException(final BadRequestException e) {
+    public ErrorResponse handleIncorrectParameterException(final Exception e) {
         log.warn(e.getMessage());
         return new ErrorResponse(e.getMessage());
     }

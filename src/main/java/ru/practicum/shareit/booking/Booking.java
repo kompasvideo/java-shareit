@@ -5,7 +5,6 @@ import org.hibernate.Hibernate;
 import ru.practicum.shareit.Status;
 import ru.practicum.shareit.booking.item.model.Item;
 import ru.practicum.shareit.user.User;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;

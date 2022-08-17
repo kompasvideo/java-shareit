@@ -6,8 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.BadRequestException;
 import ru.practicum.shareit.exceptions.NotFoundException;
-import ru.practicum.shareit.exceptions.ValidationException;
-
 import javax.validation.Valid;
 import java.util.List;
 
@@ -25,14 +23,14 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public User saveUser(User user) {
+    public User saveUser(User user) throws Throwable {
         validate(user);
         return userRepository.save(user);
     }
 
     @Transactional
     @Override
-    public User updateUser(long userId, User updatedUser) {
+    public User updateUser(long userId, User updatedUser) throws Throwable {
         validateForUpdateUser(userId, updatedUser);
         User user = userRepository.findById(userId).get();
         if (updatedUser.getName() != null)
@@ -57,28 +55,25 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private void validate(@Valid User user) {
+    private void validate(@Valid User user) throws Throwable {
         if (user.getEmail() == null || user.getEmail().isBlank()) {
             throw new BadRequestException("email не может быть пустым");
         }
         if (!user.getEmail().contains("@")) {
             throw new BadRequestException("email не имеет @");
         }
-        if (user.getName().isBlank()) {
-            throw new ValidationException("Имя не может быть пустым");
-        }
     }
 
-    private void validateForUpdateUser(Long userId, User user) {
+    private void validateForUpdateUser(Long userId, User user) throws Throwable {
         userIdValidate(userId);
         if (user.getEmail() != null) {
             emailValidate(user.getEmail());
         }
     }
 
-    private void emailValidate(String email) {
+    private void emailValidate(String email) throws Throwable {
         if (userRepository.findAll().stream().anyMatch(user -> user.getEmail().equals(email))) {
-            throw new ValidationException("email уже существует");
+            throw new Throwable();
         }
     }
 

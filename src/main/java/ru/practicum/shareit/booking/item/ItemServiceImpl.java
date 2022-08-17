@@ -35,8 +35,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto saveItem(long userId, ItemDto itemDto) {
         validateWhenSaveItem(itemDto, userId);
-        Item item = ItemMapper.toItem(itemDto);
-        item.setOwnerId(userId);
+        Item item = modelMapper.map(itemDto, Item.class);
+        item.setOwner(userRepository.findById(userId).get());
         Item itemS = itemRepository.save(item);
         return ItemMapper.toItemDto(itemS);
     }
@@ -68,11 +68,11 @@ public class ItemServiceImpl implements ItemService {
             CommentDto commentDto = new CommentDto();
             commentDto.setId(comment.getId());
             commentDto.setText(comment.getText());
-            commentDto.setAuthorName(userRepository.findById(comment.getUserId()).get().getName());
+            commentDto.setAuthorName(userRepository.findById(comment.getUser().getId()).get().getName());
             commentDto.setCreated(comment.getCreated());
             commentsDto.add(commentDto);
         }
-        if (foundItem.getOwnerId().equals(userId)) {
+        if (foundItem.getOwner().getId().equals(userId)) {
             return getItemFoundDto(foundItem, userId, commentsDto);
         }
         return ItemMapper.toItemFoundDto(foundItem,null,null, commentsDto);
@@ -97,7 +97,12 @@ public class ItemServiceImpl implements ItemService {
         checkUserById(userId);
         if (text.isBlank())
             return new ArrayList<>();
-        return ItemMapper.toItemsDto(itemRepository.findItemsByText(text));
+
+        List<ItemDto> itemsDto = new ArrayList<>();
+        for (Item item : itemRepository.findItemsByText(text)) {
+            itemsDto.add(ItemMapper.toItemDto(item));
+        }
+        return itemsDto;
     }
 
     @Transactional()
@@ -105,7 +110,7 @@ public class ItemServiceImpl implements ItemService {
     public CommentDto addComment(long userId, long itemId, Comment comment) {
         validateWhenAddComment(userId, itemId, comment);
         comment.setItemId(itemId);
-        comment.setUserId(userId);
+        comment.setUser(userRepository.findById(userId).get());
         commentRepository.save(comment);
         CommentDto commentDto = modelMapper.map(comment, CommentDto.class);
         commentDto.setId(comment.getId());
@@ -180,7 +185,6 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-    // Метод для проверок при создании комментария
     private void validateWhenAddComment(Long userId, Long itemId, Comment comment) {
         checkUserById(userId);
         checkItemById(itemId);
@@ -191,7 +195,6 @@ public class ItemServiceImpl implements ItemService {
             throw new BadRequestException("Пользователь id = " + userId + " не арендовывал предмет id = " + itemId);
         }
         List<Booking> bookings = bookingRepository.findByBookerIdAndItemId(userId, itemId);
-        //Аренда по которой можно будет сделать отзыв
         Booking checkBooking = null;
         for (Booking booking : bookings) {
             if (booking.getStatus().equals(Status.APPROVED) && booking.getEnd().isBefore(LocalDateTime.now())) {

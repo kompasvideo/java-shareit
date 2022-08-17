@@ -1,10 +1,13 @@
 package ru.practicum.shareit.booking.item.model;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
+import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -23,8 +26,9 @@ public class Comment {
     @Column(name = "item_id")
     private Long itemId;
 
-    @Column(name = "author_id")
-    private Long userId;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "author_id", nullable = false)
+    private User user;
 
     @Builder.Default
     private LocalDateTime created = LocalDateTime.now();

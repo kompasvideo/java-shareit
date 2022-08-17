@@ -1,24 +1,24 @@
 package ru.practicum.shareit.booking.item;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.item.dto.CommentDto;
 import ru.practicum.shareit.booking.item.dto.ItemDto;
 import ru.practicum.shareit.booking.item.dto.OwnerItemDto;
 import ru.practicum.shareit.booking.item.model.Item;
 
-import java.util.ArrayList;
 import java.util.List;
 
+//@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Component
+@RequiredArgsConstructor
+@Slf4j
 public class ItemMapper {
-    public static Item toItem(ItemDto itemDto) {
-        Item item = new Item();
-        item.setId(itemDto.getId());
-        item.setName(itemDto.getName());
-        item.setDescription(itemDto.getDescription());
-        item.setAvailable(itemDto.getAvailable());
-        return item;
-    }
+
+    private static ModelMapper modelMapper;
+
 
     public static ItemDto toItemDto(Item item) {
         return ItemDto.builder()
@@ -27,12 +27,6 @@ public class ItemMapper {
             .description(item.getDescription())
             .available(item.getAvailable())
             .build();
-    }
-
-    public static List<ItemDto> toItemsDto(List<Item> items) {
-        List<ItemDto> itemsDto = new ArrayList<>();
-        items.forEach(item -> itemsDto.add(toItemDto(item)));
-        return itemsDto;
     }
 
     public static OwnerItemDto toItemFoundDto(Item item,

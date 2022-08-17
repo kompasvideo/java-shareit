@@ -11,9 +11,9 @@ public interface UserService {
      * @param userDto
      * @return
      */
-    User saveUser(User userDto);
+    User saveUser(User userDto) throws Throwable;
 
-    User updateUser(long userId, User updatedUser);
+    User updateUser(long userId, User updatedUser) throws Throwable;
 
     User getUser(long userId);
 

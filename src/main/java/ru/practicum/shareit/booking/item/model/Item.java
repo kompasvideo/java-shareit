@@ -4,12 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
+import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 /**
- * // Класс вещь
+ * Класс вещь
  */
 @Entity
 @Getter
@@ -27,8 +28,9 @@ public class Item {
 
     private Boolean available;
 
-    @Column(name = "owner_id")
-    private Long ownerId;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
 
     @Column(name = "request_id")
     private Long requestId;

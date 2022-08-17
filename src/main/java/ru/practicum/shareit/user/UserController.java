@@ -21,12 +21,12 @@ public class UserController {
      * @return
      */
     @PostMapping
-    public User saveNewUser(@RequestBody User user) {
+    public User saveNewUser(@RequestBody User user) throws Throwable {
         return userService.saveUser(user);
     }
 
     @PatchMapping("/{id}")
-    public User updateUser(@PathVariable long id, @RequestBody User user) {
+    public User updateUser(@PathVariable long id, @RequestBody User user) throws Throwable {
         return userService.updateUser(id, user);
     }
 
