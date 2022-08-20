@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 public class ItemRequestDto {
-    private static User requestor;
+    private int  id;
     private String description;
     private LocalDate created;
 }
