@@ -84,25 +84,20 @@ public class ItemRequestServiceImpl implements ItemRequestService{
             List<Item> items = itemRepository.findAllByRequestId(itemRequest.getId());
             itemRequest.setItems(items);
         }
-        List<ItemRequestDto> itemRequestDtos = ItemRequestMapper.toItemRequestDtos(itemRequests);
-        return itemRequestDtos.get(0);
+        return ItemRequestMapper.toItemRequestDtos(itemRequests).get(0);
     }
 
     @Override
-    public void addResponse(Item item, long requestId) {
-        ItemRequest request = getItemRequestById(requestId);
+    public void responsesAddItems(Item item, long requestId) {
+        ItemRequest request = itemRequestRepository.findById(requestId).get();
         List<Item> responses = request.getItems();
         responses.add(item);
         request.setItems(responses);
     }
 
     @Override
-    public ItemRequest getItemRequestById(long itemRequestId) throws NoSuchElementException {
-        Optional<ItemRequest> optionalItemRequest = itemRequestRepository.findById(itemRequestId);
-        if (optionalItemRequest.isEmpty()) {
-            throw new NoSuchElementException("Запрос с таким ID не найден!");
-        }
-        return optionalItemRequest.get();
+    public ItemRequest findById(long itemRequestId) throws NoSuchElementException {
+        return itemRequestRepository.findById(itemRequestId).get();
     }
 }
 

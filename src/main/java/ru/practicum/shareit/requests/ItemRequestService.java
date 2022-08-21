@@ -12,6 +12,6 @@ public interface ItemRequestService {
     List<ItemRequestDto> getListRequest(long userId) throws Throwable;
     List<ItemRequestDto> getListRequestAllUsers(long userId, int from, int size);
     ItemRequestDto getOneRequest(long userId, long requestId) throws Throwable;
-    void addResponse(Item item, long requestId);
-    ItemRequest getItemRequestById(long itemRequestId) throws NoSuchElementException;
+    void responsesAddItems(Item item, long requestId);
+    ItemRequest findById(long itemRequestId) throws NoSuchElementException;
 }
