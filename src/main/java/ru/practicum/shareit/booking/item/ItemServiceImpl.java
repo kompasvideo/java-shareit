@@ -16,6 +16,8 @@ import ru.practicum.shareit.booking.item.model.Item;
 import ru.practicum.shareit.exceptions.BadRequestException;
 import ru.practicum.shareit.exceptions.ForbiddenException;
 import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.requests.ItemRequest;
+import ru.practicum.shareit.requests.ItemRequestService;
 import ru.practicum.shareit.user.UserRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
     private final ModelMapper modelMapper;
+    private final ItemRequestService itemRequestService;
 
     @Transactional
     @Override
@@ -37,8 +40,14 @@ public class ItemServiceImpl implements ItemService {
         validateWhenSaveItem(itemDto, userId);
         Item item = modelMapper.map(itemDto, Item.class);
         item.setOwner(userRepository.findById(userId).get());
+        if (itemDto.getRequestId() != 0) {
+            itemRequestService.addResponse(item, itemDto.getRequestId());
+            ItemRequest itemRequest = itemRequestService.getItemRequestById(itemDto.getRequestId());
+            item.setRequest(itemRequest);
+        }
         Item itemS = itemRepository.save(item);
-        return ItemMapper.toItemDto(itemS);
+        itemDto.setId(itemS.getId());
+        return itemDto;
     }
 
     @Transactional

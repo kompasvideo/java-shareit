@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking.item.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.lang.Nullable;
 
 /**
  * // DTO для Item
@@ -15,4 +16,6 @@ public class ItemDto {
     private String name;
     private String description;
     private Boolean available;
+    @Nullable
+    private long requestId;
 }

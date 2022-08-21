@@ -3,11 +3,14 @@ package ru.practicum.shareit.requests;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import ru.practicum.shareit.booking.item.model.Item;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -25,13 +28,15 @@ public class ItemRequest {
 
     private String description;
 
-//    @Column(name = "requester_id")
-//    private Long requesterId;
     @JoinColumn(name = "requester_id")
     @ManyToOne
     private User requester;
 
+    @Column(name = "created")
     private LocalDateTime created;
+
+    @OneToMany(mappedBy = "request")
+    private List<Item> items = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
