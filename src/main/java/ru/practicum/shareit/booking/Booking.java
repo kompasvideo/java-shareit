@@ -1,20 +1,53 @@
 package ru.practicum.shareit.booking;
 
-import lombok.Data;
-import ru.practicum.shareit.booking.item.dto.ItemDto;
-import ru.practicum.shareit.user.dto.UserDto;
-
+import lombok.*;
+import org.hibernate.Hibernate;
+import ru.practicum.shareit.Status;
+import ru.practicum.shareit.booking.item.model.Item;
+import ru.practicum.shareit.user.User;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-/**
- * // класс бронирования
- */
-@Data
+@Getter
+@Setter
+@ToString
+@Entity
+@Table(name = "bookings")
 public class Booking {
-    private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "start_date_time")
+    @NotNull
     private LocalDateTime start;
+
+    @Column(name = "end_date_time")
+    @NotNull
     private LocalDateTime end;
-    private ItemDto item;
-    private UserDto booker;
-    private Status status;
+
+    @ManyToOne
+    private Item item;
+
+    @ManyToOne
+    private User booker;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private Status status = Status.WAITING;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Booking booking = (Booking) o;
+        return id != null && Objects.equals(id, booking.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

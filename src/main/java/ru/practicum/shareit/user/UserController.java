@@ -2,7 +2,6 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
 
@@ -18,26 +17,26 @@ public class UserController {
     /**
      * Создание нового user
      *
-     * @param userDto
+     * @param user
      * @return
      */
     @PostMapping
-    public UserDto saveNewUser(@RequestBody UserDto userDto) {
-        return userService.saveUser(userDto);
+    public User saveNewUser(@RequestBody User user) throws Throwable {
+        return userService.saveUser(user);
     }
 
     @PatchMapping("/{id}")
-    public UserDto updateUser(@PathVariable long id, @RequestBody UserDto userDto) {
-        return userService.updateUser(id, userDto);
+    public User updateUser(@PathVariable long id, @RequestBody User user) throws Throwable {
+        return userService.updateUser(id, user);
     }
 
     @GetMapping("/{id}")
-    public UserDto getUser(@PathVariable long id) {
+    public User getUser(@PathVariable long id) {
         return userService.getUser(id);
     }
 
     @GetMapping
-    public List<UserDto> getAllUsers() {
+    public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
@@ -46,3 +45,5 @@ public class UserController {
         userService.deleteUser(id);
     }
 }
+
+

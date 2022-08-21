@@ -1,12 +1,9 @@
 package ru.practicum.shareit.user;
 
-
-import ru.practicum.shareit.user.dto.UserDto;
-
 import java.util.List;
 
 public interface UserService {
-    List<UserDto> getAllUsers();
+    List<User> getAllUsers();
 
     /**
      * Создание нового user
@@ -14,13 +11,14 @@ public interface UserService {
      * @param userDto
      * @return
      */
-    UserDto saveUser(UserDto userDto);
+    User saveUser(User userDto) throws Throwable;
 
-    UserDto updateUser(long id, UserDto userDto);
+    User updateUser(long userId, User updatedUser) throws Throwable;
 
-    UserDto getUser(long userId);
+    User getUser(long userId);
 
     void deleteUser(long userId);
 
-    boolean checkUser(long userId);
 }
+
+
