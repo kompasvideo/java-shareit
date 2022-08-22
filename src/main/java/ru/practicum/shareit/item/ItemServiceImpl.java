@@ -19,9 +19,12 @@ import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.requests.ItemRequestService;
 import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.model.User;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +42,8 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto saveItem(long userId, ItemDto itemDto) {
         validateWhenSaveItem(itemDto, userId);
         Item item = modelMapper.map(itemDto, Item.class);
-        item.setOwner(userRepository.findById(userId).get());
+        Optional<User> optionalUser = userRepository.findById(userId);
+        item.setOwner(optionalUser.get());
         if (itemDto.getRequestId() != 0) {
             itemRequestService.responsesAddItems(item, itemDto.getRequestId());
             ItemRequest itemRequest = itemRequestService.findById(itemDto.getRequestId());
@@ -54,7 +58,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto updateItem(long userId, long itemId, ItemDto itemDto) {
         validateWhenUpdateItem(userId, itemId);
-        Item item = itemRepository.findById(itemId).get();
+        Optional<Item> optionalItem = itemRepository.findById(itemId);
+        Item item = optionalItem.get();
         if (itemDto.getName() != null)
             item.setName(itemDto.getName());
         if (itemDto.getDescription() != null)
@@ -70,14 +75,16 @@ public class ItemServiceImpl implements ItemService {
     public OwnerItemDto getItem(long userId, long itemId) {
         checkUserById(userId);
         checkItemById(itemId);
-        Item foundItem = itemRepository.findById(itemId).get();
+        Optional<Item> optionalFoundItem = itemRepository.findById(itemId);
+        Item foundItem = optionalFoundItem.get();
         List<CommentDto> commentsDto = new ArrayList<>();
         List<Comment> comments = commentRepository.findAllByItemId(itemId);
         for (Comment comment : comments) {
             CommentDto commentDto = new CommentDto();
             commentDto.setId(comment.getId());
             commentDto.setText(comment.getText());
-            commentDto.setAuthorName(userRepository.findById(comment.getUser().getId()).get().getName());
+            Optional<User> optionalUser = userRepository.findById(comment.getUser().getId());
+            commentDto.setAuthorName(optionalUser.get().getName());
             commentDto.setCreated(comment.getCreated());
             commentsDto.add(commentDto);
         }
@@ -218,22 +225,25 @@ public class ItemServiceImpl implements ItemService {
 
     private void validateWhenUpdateItem(Long userId, Long itemId) {
         checkUserById(userId);
-        if (itemRepository.findItemsByOwnerId(userId) == null) {
+        List<Item> items = itemRepository.findItemsByOwnerId(userId);
+        if (items == null) {
             throw new NotFoundException("У пользователя id = " + userId + " нету вещей для аренды");
         }
-        if (itemRepository.findItemsByOwnerId(userId).stream().noneMatch(item -> item.getId().equals(itemId))) {
+        if (items.stream().noneMatch(item -> item.getId().equals(itemId))) {
             throw new ForbiddenException("У пользователя id = " + userId + " нету прав на вещь id = " + itemId);
         }
     }
 
     private void checkUserById(Long userId) {
-        if (userRepository.findById(userId).isEmpty()) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) {
             throw new NotFoundException("Пользователь с id = " + userId + " не найден");
         }
     }
 
     private void checkItemById(Long itemId) {
-        if (itemRepository.findById(itemId).isEmpty()) {
+        Optional<Item> optionalItem = itemRepository.findById(itemId);
+        if (optionalItem.isEmpty()) {
             throw new NotFoundException("Вещь id = " + itemId + " не найдена");
         }
     }

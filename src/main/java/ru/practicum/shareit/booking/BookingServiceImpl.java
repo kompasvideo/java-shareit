@@ -13,6 +13,8 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.exceptions.BadRequestException;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.model.User;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -140,8 +142,8 @@ public class BookingServiceImpl implements BookingService {
     private void validateForCreate(BookingCreateDto bookingCreateDto, Long userId) {
         checkUserById(userId);
         checkItemById(bookingCreateDto.getItemId());
-
-        if (itemRepository.findById(bookingCreateDto.getItemId()).get().getAvailable().equals(Boolean.FALSE)) {
+        Optional<Item> optionalItem = itemRepository.findById(bookingCreateDto.getItemId());
+        if (optionalItem.get().getAvailable().equals(Boolean.FALSE)) {
             throw new BadRequestException("Этот предмет не доступен для аренды");
         }
 
@@ -184,19 +186,22 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private void checkUserById(Long userId) {
-        if (userRepository.findById(userId).isEmpty()) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) {
             throw new NotFoundException("Пользователь с id = " + userId + " не найден");
         }
     }
 
     private void checkItemById(Long itemId) {
-        if (itemRepository.findById(itemId).isEmpty()) {
+        Optional<Item> optionalItem = itemRepository.findById(itemId);
+        if (optionalItem.isEmpty()) {
             throw new NotFoundException("Предмет с id = " + itemId + " не найден");
         }
     }
 
     private void checkBookingById(Long bookingId) {
-        if (bookingRepository.findById(bookingId).isEmpty()) {
+        Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
+        if (optionalBooking.isEmpty()) {
             throw new NotFoundException("Бронирование id = " + bookingId + " не найден");
         }
     }
