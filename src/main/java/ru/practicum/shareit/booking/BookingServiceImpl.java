@@ -34,8 +34,10 @@ public class BookingServiceImpl implements BookingService {
     public BookingCreateDto save(BookingCreateDto bookingCreateDto, Long userId) {
         validateForCreate(bookingCreateDto, userId);
         Booking booking = modelMapper.map(bookingCreateDto, Booking.class);
-        booking.setBooker(userRepository.findById(userId).get());
-        booking.setItem(itemRepository.findById(bookingCreateDto.getItemId()).get());
+        Optional<User> optionalUser = userRepository.findById(userId);
+        booking.setBooker(optionalUser.get());
+        Optional<Item> optionalItem = itemRepository.findById(bookingCreateDto.getItemId());
+        booking.setItem(optionalItem.get());
         bookingRepository.save(booking);
         return modelMapper.map(booking, BookingCreateDto.class);
     }
@@ -44,7 +46,8 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingDto update(Long userId, Long bookingId, Boolean approved) {
         validateForSetStatus(userId, bookingId, approved);
-        Booking booking = bookingRepository.findById(bookingId).get();
+        Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
+        Booking booking = optionalBooking.get();
 
         if (approved.equals(Boolean.TRUE)) {
             booking.setStatus(Status.APPROVED);
@@ -167,16 +170,16 @@ public class BookingServiceImpl implements BookingService {
             throw new BadRequestException("Параметр approved не был передан");
         }
 
-        if (bookingRepository.findById(bookingId).get().getStatus().equals(Status.APPROVED)
+        Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
+        if (optionalBooking.get().getStatus().equals(Status.APPROVED)
             && approved.equals(Boolean.TRUE)) {
             throw new BadRequestException("Повторное подтверждение бронирование не допустимо");
         }
-        Long id = bookingRepository
-            .findById(bookingId)
+        Long id = optionalBooking
             .get()
             .getItem().getId();
-        Long ownerId = itemRepository
-            .findById(id)
+        Optional<Item> optionalItem = itemRepository.findById(id);
+        Long ownerId = optionalItem
             .get()
             .getOwner().getId();
 
