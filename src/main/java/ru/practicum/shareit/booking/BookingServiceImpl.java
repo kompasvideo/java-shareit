@@ -6,9 +6,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.Status;
+import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.item.ItemRepository;
-import ru.practicum.shareit.booking.item.model.Item;
+import ru.practicum.shareit.item.ItemRepository;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.exceptions.BadRequestException;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.user.UserRepository;
@@ -31,7 +32,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingCreateDto save(BookingCreateDto bookingCreateDto, Long userId) {
         validateForCreate(bookingCreateDto, userId);
         Booking booking = modelMapper.map(bookingCreateDto, Booking.class);
-        booking.setBooker( userRepository.findById(userId).get());
+        booking.setBooker(userRepository.findById(userId).get());
         booking.setItem(itemRepository.findById(bookingCreateDto.getItemId()).get());
         bookingRepository.save(booking);
         return modelMapper.map(booking, BookingCreateDto.class);

@@ -1,7 +1,8 @@
 package ru.practicum.shareit.requests;
 
-import ru.practicum.shareit.booking.item.model.Item;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
+import ru.practicum.shareit.requests.model.ItemRequest;
 
 import java.util.ArrayList;
 import java.util.List;

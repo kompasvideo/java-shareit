@@ -6,8 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.BadRequestException;
 import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.user.model.User;
+
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -44,7 +47,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUser(long userId) {
         userIdValidate(userId);
-        return userRepository.findById(userId).get();
+        Optional<User> optionalUser = userRepository.findById(userId);
+        return optionalUser.get();
     }
 
     @Transactional
@@ -72,13 +76,15 @@ public class UserServiceImpl implements UserService {
     }
 
     private void emailValidate(String email) throws Throwable {
-        if (userRepository.findAll().stream().anyMatch(user -> user.getEmail().equals(email))) {
+        List<User> users = userRepository.findAll();
+        if (users.stream().anyMatch(user -> user.getEmail().equals(email))) {
             throw new Throwable();
         }
     }
 
     private void userIdValidate(Long userId) {
-        if (userRepository.findById(userId).isEmpty()) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) {
             throw new NotFoundException("Юзер не найден, id = " + userId);
         }
     }
