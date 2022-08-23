@@ -13,7 +13,6 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -32,12 +31,12 @@ public class BookingServiceImplTest {
 
     @Test
     void save() {
-        Long userId = 1l;
-        Long itemId = 2l;
-        BookingCreateDto bookingCreateDto = new BookingCreateDto(0l,2l,LocalDateTime.now().plusHours(1),
+        Long userId = 1L;
+        Long itemId = 2L;
+        BookingCreateDto bookingCreateDto = new BookingCreateDto(0L, 2L, LocalDateTime.now().plusHours(1),
             LocalDateTime.now().plusDays(1));
         User user = new User();
-        user.setId(4l);
+        user.setId(4L);
         user.setName("user");
         user.setEmail("user@user.com");
         Optional<User> optionalUserReturn = Optional.of(user);
@@ -45,7 +44,7 @@ public class BookingServiceImplTest {
             .when(mockUserRepository.findById(userId))
             .thenReturn(optionalUserReturn);
         Item item = new Item();
-        item.setId(2l);
+        item.setId(2L);
         item.setName("Отвертка");
         item.setDescription("Аккумуляторная отвертка");
         item.setAvailable(true);
@@ -56,14 +55,14 @@ public class BookingServiceImplTest {
             .thenReturn(optionalItem);
         ModelMapper modelMapper = new ModelMapper();
         Booking booking = new Booking();
-        booking.setId(0l);
+        booking.setId(0L);
         booking.setStart(bookingCreateDto.getStart());
         booking.setEnd(bookingCreateDto.getEnd());
         booking.setItem(item);
         booking.setBooker(user);
         booking.setStatus(Status.WAITING);
         Booking booking2 = new Booking();
-        booking2.setId(1l);
+        booking2.setId(1L);
         booking2.setStart(bookingCreateDto.getStart());
         booking2.setEnd(bookingCreateDto.getEnd());
         booking2.setItem(item);
@@ -80,19 +79,19 @@ public class BookingServiceImplTest {
 
     @Test
     void update() {
-        Long userId = 1l;
-        Long itemId = 2l;
-        Long bookingId = 1l;
+        Long userId = 1L;
+        Long itemId = 2L;
+        Long bookingId = 1L;
         Boolean approved = true;
-        LocalDateTime localDateTime =LocalDateTime.now();
+        LocalDateTime localDateTime = LocalDateTime.now();
         localDateTime = localDateTime.plusDays(1);
-        BookingCreateDto bookingCreateDto = new BookingCreateDto(0l,2l,LocalDateTime.now().plusHours(1), localDateTime);
+        BookingCreateDto bookingCreateDto = new BookingCreateDto(0L, 2L, LocalDateTime.now().plusHours(1), localDateTime);
         User user2 = new User();
-        user2.setId(1l);
+        user2.setId(1L);
         user2.setName("updateName");
         user2.setEmail("updateName@user.com");
         User user = new User();
-        user.setId(4l);
+        user.setId(4L);
         user.setName("user");
         user.setEmail("user@user.com");
         Optional<User> optionalUserReturn = Optional.of(user);
@@ -100,7 +99,7 @@ public class BookingServiceImplTest {
             .when(mockUserRepository.findById(userId))
             .thenReturn(optionalUserReturn);
         Item item = new Item();
-        item.setId(2l);
+        item.setId(2L);
         item.setName("Отвертка");
         item.setDescription("Аккумуляторная отвертка");
         item.setAvailable(true);
@@ -111,14 +110,14 @@ public class BookingServiceImplTest {
             .thenReturn(optionalItem);
         ModelMapper modelMapper = new ModelMapper();
         Booking booking = new Booking();
-        booking.setId(0l);
+        booking.setId(0L);
         booking.setStart(bookingCreateDto.getStart());
         booking.setEnd(bookingCreateDto.getEnd());
         booking.setItem(item);
         booking.setBooker(user);
         booking.setStatus(Status.WAITING);
         Booking booking2 = new Booking();
-        booking2.setId(1l);
+        booking2.setId(1L);
         booking2.setStart(bookingCreateDto.getStart());
         booking2.setEnd(bookingCreateDto.getEnd());
         booking2.setItem(item);
@@ -143,7 +142,9 @@ public class BookingServiceImplTest {
 
     @Test
     void get() {
-
+        Long userId = 1L;
+        Long itemId = 2L;
+        Long bookingId = 2L;
     }
 
     @Test

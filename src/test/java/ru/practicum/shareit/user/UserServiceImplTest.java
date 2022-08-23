@@ -23,7 +23,7 @@ class UserServiceImplTest {
         user.setName("user");
         user.setEmail("user@user.com");
         User userReturn = new User();
-        userReturn.setId(1l);
+        userReturn.setId(1L);
         userReturn.setName("user");
         userReturn.setEmail("user@user.com");
         Mockito
@@ -70,13 +70,13 @@ class UserServiceImplTest {
         User user = new User();
         user.setName("update");
         user.setEmail("update@user.com");
-        Long userId = 1l;
+        Long userId = 1L;
         User userReturn = new User();
-        userReturn.setId(1l);
+        userReturn.setId(1L);
         userReturn.setName("user");
         userReturn.setEmail("user@user.com");
         User userReturnSave = new User();
-        userReturnSave.setId(1l);
+        userReturnSave.setId(1L);
         userReturnSave.setName("update");
         userReturnSave.setEmail("update@user.com");
         Optional<User> optionalUserReturn = Optional.of(userReturn);
@@ -101,7 +101,7 @@ class UserServiceImplTest {
     @Test
     void getAllUsers() {
         User userReturn = new User();
-        userReturn.setId(1l);
+        userReturn.setId(1L);
         userReturn.setName("update");
         userReturn.setEmail("update@user.com");
         List<User> users = new ArrayList<>();
@@ -120,9 +120,9 @@ class UserServiceImplTest {
 
     @Test
     void getUser() {
-        Long userId = 1l;
+        Long userId = 1L;
         User userReturn = new User();
-        userReturn.setId(1l);
+        userReturn.setId(1L);
         userReturn.setName("update");
         userReturn.setEmail("update@user.com");
         Optional<User> optionalUserReturn = Optional.of(userReturn);
@@ -138,9 +138,9 @@ class UserServiceImplTest {
 
     @Test
     void deleteUser() {
-        Long userId = 3l;
+        Long userId = 3L;
         User userReturn = new User();
-        userReturn.setId(1l);
+        userReturn.setId(1L);
         userReturn.setName("update");
         userReturn.setEmail("update@user.com");
         Optional<User> optionalUserReturn = Optional.of(userReturn);
@@ -148,7 +148,7 @@ class UserServiceImplTest {
             .when(mockUserRepository.findById(userId))
             .thenReturn(optionalUserReturn);
         Mockito
-            .doAnswer(i -> {return null;})
+            .doAnswer(i -> null)
             .when(mockUserRepository).deleteById(userId);
         UserService userService = new UserServiceImpl(mockUserRepository);
         userService.deleteUser(userId);

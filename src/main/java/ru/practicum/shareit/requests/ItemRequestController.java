@@ -8,7 +8,7 @@ import ru.practicum.shareit.requests.dto.ItemRequestInputDto;
 import java.util.List;
 
 /**
- *  ласс запрос
+ * ласс запрос
  */
 @RestController
 @RequiredArgsConstructor
@@ -29,14 +29,14 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public List<ItemRequestDto> getListRequestAllUsers(@RequestHeader("X-Sharer-User-Id") long userId,
-              @RequestParam(required = false, defaultValue = "0") int from,
-              @RequestParam(required = false, defaultValue = "10") int size ) {
+                                                       @RequestParam(required = false, defaultValue = "0") int from,
+                                                       @RequestParam(required = false, defaultValue = "10") int size) {
         return itemRequestService.getListRequestAllUsers(userId, from, size);
     }
 
     @GetMapping("/{requestId}")
     public ItemRequestDto getOneRequest(@RequestHeader("X-Sharer-User-Id") long userId,
-                                     @PathVariable long requestId) throws Throwable {
+                                        @PathVariable long requestId) throws Throwable {
         return itemRequestService.getOneRequest(userId, requestId);
     }
 }

@@ -4,15 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.item.ItemRepository;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.ValidationException;
+import ru.practicum.shareit.item.ItemRepository;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.dto.ItemRequestInputDto;
 import ru.practicum.shareit.requests.model.ItemRequest;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ItemRequestServiceImpl implements ItemRequestService{
+public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestRepository itemRequestRepository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
@@ -31,28 +31,28 @@ public class ItemRequestServiceImpl implements ItemRequestService{
     @Override
     public ItemRequestDto addNewRequest(long userId, ItemRequestInputDto itemRequestInputDto) throws Throwable {
         User user = userRepository.findById(userId).orElseThrow(Throwable::new);
-        if(itemRequestInputDto.getDescription()== null || itemRequestInputDto.getDescription().isEmpty()){
+        if (itemRequestInputDto.getDescription() == null || itemRequestInputDto.getDescription().isEmpty()) {
             throw new ValidationException("Поле description пустое");
         }
-        ItemRequest itemRequest = modelMapper.map( itemRequestInputDto, ItemRequest.class);
+        ItemRequest itemRequest = modelMapper.map(itemRequestInputDto, ItemRequest.class);
         itemRequest.setRequester(user);
         itemRequest.setCreated(LocalDateTime.now());
         itemRequestRepository.save(itemRequest);
-        ItemRequestDto itemRequestDto =  modelMapper.map(itemRequest, ItemRequestDto.class);
+        ItemRequestDto itemRequestDto = modelMapper.map(itemRequest, ItemRequestDto.class);
         List<ItemRequestDto.Item> responses = new ArrayList<>();
         for (Item item : itemRequest.getItems()) {
             responses.add(new ItemRequestDto.Item(item.getId(), item.getName(), item.getDescription(),
                 item.getAvailable(), item.getRequest().getId()));
         }
         itemRequestDto.setItems(responses);
-        return  itemRequestDto;
+        return itemRequestDto;
     }
 
     @Override
     public List<ItemRequestDto> getListRequest(long userId) throws Throwable {
         User user = userRepository.findById(userId).orElseThrow(Throwable::new);
         List<ItemRequest> itemRequests = itemRequestRepository.findAllByRequesterIdOrderByIdAsc(user.getId());
-        for (ItemRequest itemRequest: itemRequests ) {
+        for (ItemRequest itemRequest : itemRequests) {
             List<Item> items = itemRepository.findAllByRequestId(itemRequest.getId());
             itemRequest.setItems(items);
         }
@@ -61,7 +61,7 @@ public class ItemRequestServiceImpl implements ItemRequestService{
 
     @Override
     public List<ItemRequestDto> getListRequestAllUsers(long userId, int from, int size) {
-        if (from < 0 | size == 0){
+        if (from < 0 | size == 0) {
             throw new ValidationException("Индекс from или size < 1");
         }
         List<ItemRequest> requests = itemRequestRepository.findOthersRequests(userId, from, size);
@@ -73,7 +73,7 @@ public class ItemRequestServiceImpl implements ItemRequestService{
         userRepository.findById(userId).orElseThrow(Throwable::new);
         itemRequestRepository.findById(requestId).orElseThrow(NotFoundException::new);
         List<ItemRequest> itemRequests = itemRequestRepository.findAllByRequesterIdOrderByIdAsc(requestId);
-        for (ItemRequest itemRequest: itemRequests ) {
+        for (ItemRequest itemRequest : itemRequests) {
             List<Item> items = itemRepository.findAllByRequestId(itemRequest.getId());
             itemRequest.setItems(items);
         }

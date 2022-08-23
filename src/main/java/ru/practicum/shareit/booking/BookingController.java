@@ -35,7 +35,7 @@ public class BookingController {
 
     @GetMapping()
     public List<BookingDto> getAllByCurrentUser(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                @RequestParam( required = false) State state) {
+                                                @RequestParam(required = false) State state) {
         return bookingService.getAllByCurrentUser(userId, state);
     }
 

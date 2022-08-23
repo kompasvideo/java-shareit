@@ -8,10 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.Status;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.item.ItemRepository;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.exceptions.BadRequestException;
 import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.item.ItemRepository;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
@@ -29,6 +29,7 @@ public class BookingServiceImpl implements BookingService {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
     private final ModelMapper modelMapper;
+
     @Transactional
     @Override
     public BookingCreateDto save(BookingCreateDto bookingCreateDto, Long userId) {
@@ -116,15 +117,15 @@ public class BookingServiceImpl implements BookingService {
                 resultBookings = bookingRepository.findAllByOwnerIdOrderByEndDesc(userId);
                 break;
             case WAITING:
-                resultBookings =  bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId,
+                resultBookings = bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId,
                     Status.WAITING);
                 break;
             case REJECTED:
-                resultBookings =  bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId,
+                resultBookings = bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId,
                     Status.REJECTED);
                 break;
             case PAST:
-                resultBookings =bookingRepository.findAllByItemOwnerIdAndEndBeforeOrderByStartDesc(userId, now);
+                resultBookings = bookingRepository.findAllByItemOwnerIdAndEndBeforeOrderByStartDesc(userId, now);
                 break;
             case CURRENT:
                 resultBookings = bookingRepository.findAllByItemOwnerIdAndStartBeforeAndEndAfterOrderByStartDesc(userId, now, now);
@@ -139,7 +140,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private List<BookingDto> getBookingsDto(List<Booking> bookings) {
-        return bookings.stream().map(booking -> modelMapper.map(booking,BookingDto.class)).collect(Collectors.toList());
+        return bookings.stream().map(booking -> modelMapper.map(booking, BookingDto.class)).collect(Collectors.toList());
     }
 
     private void validateForCreate(BookingCreateDto bookingCreateDto, Long userId) {
