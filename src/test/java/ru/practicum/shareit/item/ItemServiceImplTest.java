@@ -59,7 +59,7 @@ class ItemServiceImplTest {
         Mockito
             .when(mockUserRepository.findById(userId))
             .thenReturn(optionalUserReturn);
-        ItemDto itemDto = new ItemDto(0L,item.getName(),item.getDescription(),item.getAvailable(),
+        ItemDto itemDto = new ItemDto(0L, item.getName(), item.getDescription(), item.getAvailable(),
             0);
         Mockito
             .doAnswer(i -> null)
@@ -75,8 +75,8 @@ class ItemServiceImplTest {
             .thenReturn(itemS);
         ModelMapper modelMapper = new ModelMapper();
         ItemService itemService = new ItemServiceImpl(mockItemRepository, mockUserRepository,
-            mockBookingRepository,mockCommentRepository,modelMapper, mockItemRequestService);
-        ItemDto itemDtoResult = new ItemDto(1L,itemS.getName(),itemS.getDescription(),itemS.getAvailable(),
+            mockBookingRepository, mockCommentRepository, modelMapper, mockItemRequestService);
+        ItemDto itemDtoResult = new ItemDto(1L, itemS.getName(), itemS.getDescription(), itemS.getAvailable(),
             0);
         ItemDto itemDtoTest = itemService.saveItem(userId, itemDto);
         assertEquals(itemDtoResult.getId(), itemDtoTest.getId());
@@ -92,7 +92,7 @@ class ItemServiceImplTest {
         item.setName("Дрель+");
         item.setDescription("Аккумуляторная дрель");
         item.setAvailable(false);
-        ItemDto itemDto = new ItemDto(item.getId(), item.getName(),item.getDescription(),item.getAvailable(),
+        ItemDto itemDto = new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
             0);
         User userReturn = new User();
         userReturn.setId(1L);
@@ -122,10 +122,10 @@ class ItemServiceImplTest {
             .thenReturn(itemS);
         ModelMapper modelMapper = new ModelMapper();
         ItemService itemService = new ItemServiceImpl(mockItemRepository, mockUserRepository,
-            mockBookingRepository,mockCommentRepository,modelMapper, mockItemRequestService);
+            mockBookingRepository, mockCommentRepository, modelMapper, mockItemRequestService);
         Long itemId = 1L;
-        ItemDto itemDtoTest = itemService.updateItem(userId,itemId,itemDto);
-        ItemDto itemDtoResult = new ItemDto(1L,item.getName(),item.getDescription(),item.getAvailable(),
+        ItemDto itemDtoTest = itemService.updateItem(userId, itemId, itemDto);
+        ItemDto itemDtoResult = new ItemDto(1L, item.getName(), item.getDescription(), item.getAvailable(),
             0);
         assertEquals(itemDtoResult.getId(), itemDtoTest.getId());
         assertEquals(itemDtoResult.getName(), itemDtoTest.getName());
@@ -164,9 +164,9 @@ class ItemServiceImplTest {
             .thenReturn(bookings);
         ModelMapper modelMapper = new ModelMapper();
         ItemService itemService = new ItemServiceImpl(mockItemRepository, mockUserRepository,
-            mockBookingRepository,mockCommentRepository,modelMapper, mockItemRequestService);
-        OwnerItemDto itemDtoTest = itemService.getItem(userId,itemId);
-        ItemDto itemDtoResult = new ItemDto(1L,item.getName(),item.getDescription(),item.getAvailable(),
+            mockBookingRepository, mockCommentRepository, modelMapper, mockItemRequestService);
+        OwnerItemDto itemDtoTest = itemService.getItem(userId, itemId);
+        ItemDto itemDtoResult = new ItemDto(1L, item.getName(), item.getDescription(), item.getAvailable(),
             0);
         assertEquals(itemDtoResult.getId(), itemDtoTest.getId());
         assertEquals(itemDtoResult.getName(), itemDtoTest.getName());
@@ -197,9 +197,9 @@ class ItemServiceImplTest {
             .thenReturn(items);
         ModelMapper modelMapper = new ModelMapper();
         ItemService itemService = new ItemServiceImpl(mockItemRepository, mockUserRepository,
-            mockBookingRepository,mockCommentRepository,modelMapper, mockItemRequestService);
+            mockBookingRepository, mockCommentRepository, modelMapper, mockItemRequestService);
         List<OwnerItemDto> itemDtoTest = itemService.getAllItem(userId);
-        ItemDto itemDtoResult = new ItemDto(1L,item.getName(),item.getDescription(),item.getAvailable(),
+        ItemDto itemDtoResult = new ItemDto(1L, item.getName(), item.getDescription(), item.getAvailable(),
             0);
         assertEquals(itemDtoResult.getId(), itemDtoTest.get(0).getId());
         assertEquals(itemDtoResult.getName(), itemDtoTest.get(0).getName());
@@ -231,9 +231,9 @@ class ItemServiceImplTest {
             .thenReturn(items);
         ModelMapper modelMapper = new ModelMapper();
         ItemService itemService = new ItemServiceImpl(mockItemRepository, mockUserRepository,
-            mockBookingRepository,mockCommentRepository,modelMapper, mockItemRequestService);
+            mockBookingRepository, mockCommentRepository, modelMapper, mockItemRequestService);
         List<ItemDto> itemDtoTest = itemService.searchItem(userId, text);
-        ItemDto itemDtoResult = new ItemDto(1L,item.getName(),item.getDescription(),item.getAvailable(),
+        ItemDto itemDtoResult = new ItemDto(1L, item.getName(), item.getDescription(), item.getAvailable(),
             0);
         assertEquals(itemDtoResult.getId(), itemDtoTest.get(0).getId());
         assertEquals(itemDtoResult.getName(), itemDtoTest.get(0).getName());
@@ -293,8 +293,8 @@ class ItemServiceImplTest {
             .thenReturn(comment);
         ModelMapper modelMapper = new ModelMapper();
         ItemService itemService = new ItemServiceImpl(mockItemRepository, mockUserRepository,
-            mockBookingRepository,mockCommentRepository,modelMapper, mockItemRequestService);
-        CommentDto commentDtoTest = itemService.addComment(userId,itemId, comment);
+            mockBookingRepository, mockCommentRepository, modelMapper, mockItemRequestService);
+        CommentDto commentDtoTest = itemService.addComment(userId, itemId, comment);
         CommentDto commentDtoResult = new CommentDto();
         commentDtoResult.setText("Add comment from user1");
         commentDtoResult.setAuthorName("user");
@@ -311,7 +311,7 @@ class ItemServiceImplTest {
         item.setName("Дрель+");
         item.setDescription("Аккумуляторная дрель");
         item.setAvailable(false);
-        ItemDto itemDto = new ItemDto(item.getId(), item.getName(),item.getDescription(),item.getAvailable(),
+        ItemDto itemDto = new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
             0);
         User userReturn = new User();
         userReturn.setId(1L);
@@ -340,7 +340,7 @@ class ItemServiceImplTest {
             .thenReturn(itemS);
         ModelMapper modelMapper = new ModelMapper();
         ItemService itemService = new ItemServiceImpl(mockItemRepository, mockUserRepository,
-            mockBookingRepository,mockCommentRepository,modelMapper, mockItemRequestService);
+            mockBookingRepository, mockCommentRepository, modelMapper, mockItemRequestService);
         Long itemId = 1L;
         assertThrows(ForbiddenException.class, () -> itemService.updateItem(userId, itemId, itemDto));
     }
@@ -363,7 +363,7 @@ class ItemServiceImplTest {
         Mockito
             .when(mockUserRepository.findById(userId))
             .thenReturn(optionalUserReturn);
-        ItemDto itemDto = new ItemDto(0L,item.getName(),item.getDescription(),item.getAvailable(),
+        ItemDto itemDto = new ItemDto(0L, item.getName(), item.getDescription(), item.getAvailable(),
             0);
         Mockito
             .doAnswer(i -> null)
@@ -379,8 +379,8 @@ class ItemServiceImplTest {
             .thenReturn(itemS);
         ModelMapper modelMapper = new ModelMapper();
         ItemService itemService = new ItemServiceImpl(mockItemRepository, mockUserRepository,
-            mockBookingRepository,mockCommentRepository,modelMapper, mockItemRequestService);
-        ItemDto itemDtoResult = new ItemDto(1L,itemS.getName(),itemS.getDescription(),itemS.getAvailable(),
+            mockBookingRepository, mockCommentRepository, modelMapper, mockItemRequestService);
+        ItemDto itemDtoResult = new ItemDto(1L, itemS.getName(), itemS.getDescription(), itemS.getAvailable(),
             0);
         assertThrows(NotFoundException.class, () -> itemService.saveItem(userId, itemDto));
     }
