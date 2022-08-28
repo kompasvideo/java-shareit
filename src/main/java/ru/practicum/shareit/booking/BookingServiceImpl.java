@@ -78,7 +78,7 @@ public class BookingServiceImpl implements BookingService {
         State state;
         if (stringState == null) {
             state = State.ALL;
-        } else if (stringState == "") {
+        } else if (stringState.isEmpty()) {
             state = State.ALL;
         } else state = State.valueOf(stringState);
         LocalDateTime now = LocalDateTime.now();
@@ -124,7 +124,7 @@ public class BookingServiceImpl implements BookingService {
         State state;
         if (stringState == null) {
             state = State.ALL;
-        } else if (stringState == "") {
+        } else if (stringState.isEmpty()) {
             state = State.ALL;
         } else state = State.valueOf(stringState);
         Page<Booking> resultBookings;
