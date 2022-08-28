@@ -76,7 +76,9 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getAllByCurrentUser(Long userId, String stringState, int from, int size) {
         checkUserById(userId);
         State state;
-        if (stringState == null || stringState == "") {
+        if (stringState == null) {
+            state = State.ALL;
+        } else if (stringState == "") {
             state = State.ALL;
         } else state = State.valueOf(stringState);
         LocalDateTime now = LocalDateTime.now();
@@ -120,7 +122,9 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getAllByOwnedItems(Long userId, String stringState, int from, int size) {
         checkUserById(userId);
         State state;
-        if (stringState == null || stringState == "") {
+        if (stringState == null) {
+            state = State.ALL;
+        } else if (stringState == "") {
             state = State.ALL;
         } else state = State.valueOf(stringState);
         Page<Booking> resultBookings;
