@@ -11,7 +11,6 @@ import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
-//@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Component
 @RequiredArgsConstructor
 @Slf4j
