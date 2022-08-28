@@ -342,7 +342,7 @@ class ItemServiceImplTest {
         ItemService itemService = new ItemServiceImpl(mockItemRepository, mockUserRepository,
             mockBookingRepository,mockCommentRepository,modelMapper, mockItemRequestService);
         Long itemId = 1L;
-        assertThrows(ForbiddenException.class, () ->itemService.updateItem(userId,itemId,itemDto));
+        assertThrows(ForbiddenException.class, () -> itemService.updateItem(userId, itemId, itemDto));
     }
 
     @Test
