@@ -50,10 +50,4 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findTwoBookingByOwnerIdOrderByEndAsc(@Param("ownerId") Long ownerId, @Param("itemId") Long itemId);
 
     List<Booking> findByBookerIdAndItemId(Long bookerId, Long itemId);
-    List<Booking> findAllByBookerIdOrderByEndDesc(Long bookedId);
-    @Query("select b from Booking as b" +
-        " join Item as i on i.id = b.item.id" +
-        " where i.owner.id = :ownerId" +
-        " order by b.end desc ")
-    List<Booking> findAllByOwnerIdOrderByEndDesc(@Param("ownerId") Long ownerId);
 }

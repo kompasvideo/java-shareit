@@ -78,10 +78,12 @@ public class BookingServiceImpl implements BookingService {
         State state;
         if (stringState == null || stringState == "") {
             state = State.ALL;
-        }  else state = State.valueOf(stringState);
+        } else state = State.valueOf(stringState);
         LocalDateTime now = LocalDateTime.now();
         Page<Booking> resultBookings;
-        if(from == size){ from-- ; }
+        if (from == size) {
+            from--;
+        }
         PageRequest pageRequest = PageRequest.of(from, size);
         switch (state) {
             case ALL:
@@ -120,7 +122,7 @@ public class BookingServiceImpl implements BookingService {
         State state;
         if (stringState == null || stringState == "") {
             state = State.ALL;
-        }  else state = State.valueOf(stringState);
+        } else state = State.valueOf(stringState);
         Page<Booking> resultBookings;
         PageRequest pageRequest = PageRequest.of(from, size);
         LocalDateTime now = LocalDateTime.now();

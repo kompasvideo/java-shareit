@@ -9,7 +9,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.ValidationException;
-import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
@@ -36,7 +35,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestDto addNewRequest(long userId, ItemRequestInputDto itemRequestInputDto) throws Throwable {
-        Optional<User>  optionalUser = userRepository.findById(userId);
+        Optional<User> optionalUser = userRepository.findById(userId);
         User user = optionalUser.orElseThrow(Throwable::new);
         if (itemRequestInputDto.getDescription() == null || itemRequestInputDto.getDescription().isEmpty()) {
             throw new ValidationException("Поле description пустое");
@@ -57,7 +56,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestDto> getListRequest(long userId) throws Throwable {
-        Optional<User>  optionalUser = userRepository.findById(userId);
+        Optional<User> optionalUser = userRepository.findById(userId);
         User user = optionalUser.orElseThrow(Throwable::new);
         List<ItemRequest> itemRequests = itemRequestRepository.findAllByRequesterIdOrderByIdAsc(user.getId());
         for (ItemRequest itemRequest : itemRequests) {
@@ -92,7 +91,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestDto getOneRequest(long userId, long requestId) throws Throwable {
-        Optional<User>  optionalUser = userRepository.findById(userId);
+        Optional<User> optionalUser = userRepository.findById(userId);
         User user = optionalUser.orElseThrow(Throwable::new);
         Optional<ItemRequest> optionalItemRequest = itemRequestRepository.findById(requestId);
         ItemRequest itemRequest2 = optionalItemRequest.orElseThrow(NotFoundException::new);

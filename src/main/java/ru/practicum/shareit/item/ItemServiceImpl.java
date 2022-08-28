@@ -8,16 +8,16 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.Status;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.exceptions.BadRequestException;
+import ru.practicum.shareit.exceptions.ForbiddenException;
+import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.OwnerItemDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.exceptions.BadRequestException;
-import ru.practicum.shareit.exceptions.ForbiddenException;
-import ru.practicum.shareit.exceptions.NotFoundException;
-import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.requests.ItemRequestService;
+import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
@@ -91,7 +91,7 @@ public class ItemServiceImpl implements ItemService {
         if (foundItem.getOwner().getId().equals(userId)) {
             return getItemFoundDto(foundItem, userId, commentsDto);
         }
-        return ItemMapper.toItemFoundDto(foundItem,null,null, commentsDto);
+        return ItemMapper.toItemFoundDto(foundItem, null, null, commentsDto);
     }
 
     @Transactional(readOnly = true)

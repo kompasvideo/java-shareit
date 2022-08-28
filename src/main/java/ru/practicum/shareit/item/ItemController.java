@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -17,6 +16,7 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
     private final ItemService itemService;
+
     @Autowired
     public ItemController(ItemService itemService) {
         this.itemService = itemService;
@@ -44,7 +44,6 @@ public class ItemController {
     public List<OwnerItemDto> getAllItems(@RequestHeader("X-Sharer-User-Id") long userId) {
         return itemService.getAllItem(userId);
     }
-
 
 
     @GetMapping("/search")
