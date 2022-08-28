@@ -59,12 +59,12 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private void validate(@Valid User user) throws Throwable {
+    private void validate(@Valid User user) {
         if (user.getEmail() == null || user.getEmail().isBlank()) {
-            throw new BadRequestException("email не может быть пустым");
+            throw new BadRequestException();
         }
         if (!user.getEmail().contains("@")) {
-            throw new BadRequestException("email не имеет @");
+            throw new BadRequestException();
         }
     }
 

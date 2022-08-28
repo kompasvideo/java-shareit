@@ -54,6 +54,11 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
+    /**
+     * Все ситуаций, когда  что сервер понял запрос, но отказывается его авторизовать, код 403
+     * @param e
+     * @return
+     */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public Map<String, String> handleForbiddenException(final ForbiddenException e) {

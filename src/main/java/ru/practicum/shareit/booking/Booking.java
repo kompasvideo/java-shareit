@@ -12,7 +12,8 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "bookings")
 public class Booking {
@@ -35,7 +36,7 @@ public class Booking {
     private User booker;
 
     @Enumerated(EnumType.STRING)
-    @Builder.Default
+    //@Builder.Default
     private Status status = Status.WAITING;
 
     @Override

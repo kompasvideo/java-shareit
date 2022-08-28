@@ -30,7 +30,7 @@ public class ItemRequestController {
     @GetMapping("/all")
     public List<ItemRequestDto> getListRequestAllUsers(@RequestHeader("X-Sharer-User-Id") long userId,
                                                        @RequestParam(required = false, defaultValue = "0") int from,
-                                                       @RequestParam(required = false, defaultValue = "10") int size) {
+                                                       @RequestParam(required = false, defaultValue = "10") int size) throws Throwable {
         return itemRequestService.getListRequestAllUsers(userId, from, size);
     }
 

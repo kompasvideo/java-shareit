@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.practicum.shareit.Status;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.exceptions.ForbiddenException;
+import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.OwnerItemDto;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 class ItemServiceImplTest {
@@ -298,5 +301,87 @@ class ItemServiceImplTest {
         commentDtoResult.setCreated(LocalDateTime.now());
         assertEquals(commentDtoResult.getText(), commentDtoTest.getText());
         assertEquals(commentDtoResult.getAuthorName(), commentDtoTest.getAuthorName());
+    }
+
+    @Test
+    void updateItem_ItemUpdateWithOtherUser() {
+        Long userId = 4L;
+        Item item = new Item();
+        item.setId(1L);
+        item.setName("Дрель+");
+        item.setDescription("Аккумуляторная дрель");
+        item.setAvailable(false);
+        ItemDto itemDto = new ItemDto(item.getId(), item.getName(),item.getDescription(),item.getAvailable(),
+            0);
+        User userReturn = new User();
+        userReturn.setId(1L);
+        userReturn.setName("updateName");
+        userReturn.setEmail("updateName@user.com");
+        Optional<User> optionalUserReturn = Optional.of(userReturn);
+        Mockito
+            .when(mockUserRepository.findById(userId))
+            .thenReturn(optionalUserReturn);
+        Item itemS = new Item();
+        itemS.setId(1L);
+        itemS.setName("Дрель");
+        itemS.setDescription("Простая дрель");
+        itemS.setAvailable(true);
+        itemS.setOwner(userReturn);
+        List<Item> items = new ArrayList<>();
+        Mockito
+            .when(mockItemRepository.findItemsByOwnerId(userId))
+            .thenReturn(items);
+        Optional<Item> optionalItem = Optional.of(itemS);
+        Mockito
+            .when(mockItemRepository.findById(userId))
+            .thenReturn(optionalItem);
+        Mockito
+            .when(mockItemRepository.save(item))
+            .thenReturn(itemS);
+        ModelMapper modelMapper = new ModelMapper();
+        ItemService itemService = new ItemServiceImpl(mockItemRepository, mockUserRepository,
+            mockBookingRepository,mockCommentRepository,modelMapper, mockItemRequestService);
+        Long itemId = 1L;
+        assertThrows(ForbiddenException.class, () ->itemService.updateItem(userId,itemId,itemDto));
+    }
+
+    @Test
+    void saveItem_ItemCreateFailedByWrongUserId() {
+        Long userId = 10L;
+        Item item = new Item();
+        item.setId(0L);
+        item.setName("Дрель");
+        item.setDescription("Простая дрель");
+        item.setAvailable(true);
+        ItemRequest request = new ItemRequest();
+        item.setRequest(request);
+        User userReturn = new User();
+        userReturn.setId(1L);
+        userReturn.setName("updateName");
+        userReturn.setEmail("updateName@user.com");
+        Optional<User> optionalUserReturn = Optional.empty();
+        Mockito
+            .when(mockUserRepository.findById(userId))
+            .thenReturn(optionalUserReturn);
+        ItemDto itemDto = new ItemDto(0L,item.getName(),item.getDescription(),item.getAvailable(),
+            0);
+        Mockito
+            .doAnswer(i -> null)
+            .when(mockItemRequestService).responsesAddItems(item, itemDto.getRequestId());
+        Item itemS = new Item();
+        itemS.setId(1L);
+        itemS.setName("Дрель");
+        itemS.setDescription("Простая дрель");
+        itemS.setAvailable(true);
+        itemS.setOwner(userReturn);
+        Mockito
+            .when(mockItemRepository.save(item))
+            .thenReturn(itemS);
+        ModelMapper modelMapper = new ModelMapper();
+        ItemService itemService = new ItemServiceImpl(mockItemRepository, mockUserRepository,
+            mockBookingRepository,mockCommentRepository,modelMapper, mockItemRequestService);
+        ItemDto itemDtoResult = new ItemDto(1L,itemS.getName(),itemS.getDescription(),itemS.getAvailable(),
+            0);
+        assertThrows(NotFoundException.class, () ->itemService.saveItem(userId,itemDto));
     }
 }

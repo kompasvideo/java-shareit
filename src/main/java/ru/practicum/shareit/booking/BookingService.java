@@ -13,8 +13,8 @@ public interface BookingService {
     BookingDto update(Long userId, Long bookingId, Boolean approved);
 
 
-    List<BookingDto> getAllByCurrentUser(Long userId, State state);
+    List<BookingDto> getAllByCurrentUser(Long userId, String state, int from, int size);
 
-    List<BookingDto> getAllByOwnedItems(Long userId, State state);
+    List<BookingDto> getAllByOwnedItems(Long userId, String state, int from, int size);
 }
 

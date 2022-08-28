@@ -1,5 +1,7 @@
 package ru.practicum.shareit.requests;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,4 +20,6 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
         "SELECT * FROM temp WHERE line_number >= ? " +
         "LIMIT ?;")
     List<ItemRequest> findOthersRequests(long user, int from, int size);
+
+    Page<ItemRequest> findByIdIsNot(long requesterId, Pageable pageable);
 }

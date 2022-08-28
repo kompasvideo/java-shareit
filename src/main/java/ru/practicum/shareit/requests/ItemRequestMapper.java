@@ -24,4 +24,13 @@ public class ItemRequestMapper {
         }
         return dtos;
     }
+
+    public static List<ItemRequestDto.Item> toItemRequestDtoItem(List<Item> items){
+        List<ItemRequestDto.Item> itemList = new ArrayList<>();
+        for (Item item : items) {
+            itemList.add(new ItemRequestDto.Item(item.getId(), item.getName(), item.getDescription(),
+                item.getAvailable(), item.getRequest().getId()));
+        }
+        return itemList;
+    }
 }

@@ -13,7 +13,7 @@ public interface ItemRequestService {
 
     List<ItemRequestDto> getListRequest(long userId) throws Throwable;
 
-    List<ItemRequestDto> getListRequestAllUsers(long userId, int from, int size);
+    List<ItemRequestDto> getListRequestAllUsers(long userId, int from, int size) throws Throwable;
 
     ItemRequestDto getOneRequest(long userId, long requestId) throws Throwable;
 

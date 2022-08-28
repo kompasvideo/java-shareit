@@ -3,9 +3,13 @@ package ru.practicum.shareit.requests;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.ValidationException;
+import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
@@ -18,6 +22,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +36,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestDto addNewRequest(long userId, ItemRequestInputDto itemRequestInputDto) throws Throwable {
-        User user = userRepository.findById(userId).orElseThrow(Throwable::new);
+        Optional<User>  optionalUser = userRepository.findById(userId);
+        User user = optionalUser.orElseThrow(Throwable::new);
         if (itemRequestInputDto.getDescription() == null || itemRequestInputDto.getDescription().isEmpty()) {
             throw new ValidationException("Поле description пустое");
         }
@@ -50,7 +57,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestDto> getListRequest(long userId) throws Throwable {
-        User user = userRepository.findById(userId).orElseThrow(Throwable::new);
+        Optional<User>  optionalUser = userRepository.findById(userId);
+        User user = optionalUser.orElseThrow(Throwable::new);
         List<ItemRequest> itemRequests = itemRequestRepository.findAllByRequesterIdOrderByIdAsc(user.getId());
         for (ItemRequest itemRequest : itemRequests) {
             List<Item> items = itemRepository.findAllByRequestId(itemRequest.getId());
@@ -60,18 +68,34 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestDto> getListRequestAllUsers(long userId, int from, int size) {
-        if (from < 0 | size == 0) {
-            throw new ValidationException("Индекс from или size < 1");
+    public List<ItemRequestDto> getListRequestAllUsers(long userId, int from, int size) throws Throwable {
+        if (from == 0 && size == 0) {
+            throw new ValidationException("from = 0, size = 0");
         }
-        List<ItemRequest> requests = itemRequestRepository.findOthersRequests(userId, from, size);
-        return ItemRequestMapper.toItemRequestDtos(requests);
+        if (size == 0 || size < 0) {
+            throw new Throwable();
+        }
+        if (from < 0) {
+            throw new ValidationException("from < 0");
+        }
+        PageRequest pageRequest = PageRequest.of(from, size, Sort.by("created"));
+        Page<ItemRequest> itemRequests = itemRequestRepository.findByIdIsNot(userId, pageRequest);
+        List<ItemRequestDto> itemRequestDtoList = itemRequests.stream()
+            .map(i -> ItemRequestMapper.toItemRequestDto(i))
+            .collect(Collectors.toList());
+        for (ItemRequestDto itemRequestDto : itemRequestDtoList) {
+            List<Item> items = itemRepository.findAllByRequestId(itemRequestDto.getId());
+            itemRequestDto.setItems(ItemRequestMapper.toItemRequestDtoItem(items));
+        }
+        return itemRequestDtoList;
     }
 
     @Override
     public ItemRequestDto getOneRequest(long userId, long requestId) throws Throwable {
-        userRepository.findById(userId).orElseThrow(Throwable::new);
-        itemRequestRepository.findById(requestId).orElseThrow(NotFoundException::new);
+        Optional<User>  optionalUser = userRepository.findById(userId);
+        User user = optionalUser.orElseThrow(Throwable::new);
+        Optional<ItemRequest> optionalItemRequest = itemRequestRepository.findById(requestId);
+        ItemRequest itemRequest2 = optionalItemRequest.orElseThrow(NotFoundException::new);
         List<ItemRequest> itemRequests = itemRequestRepository.findAllByRequesterIdOrderByIdAsc(requestId);
         for (ItemRequest itemRequest : itemRequests) {
             List<Item> items = itemRepository.findAllByRequestId(itemRequest.getId());
@@ -82,7 +106,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public void responsesAddItems(Item item, long requestId) {
-        ItemRequest request = itemRequestRepository.findById(requestId).get();
+        Optional<ItemRequest> optionalItemRequest = itemRequestRepository.findById(requestId);
+        ItemRequest request = optionalItemRequest.get();
         List<Item> responses = request.getItems();
         responses.add(item);
         request.setItems(responses);
@@ -90,7 +115,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequest findById(long itemRequestId) throws NoSuchElementException {
-        return itemRequestRepository.findById(itemRequestId).get();
+        Optional<ItemRequest> optionalItemRequest = itemRequestRepository.findById(itemRequestId);
+        return optionalItemRequest.get();
     }
 }
 

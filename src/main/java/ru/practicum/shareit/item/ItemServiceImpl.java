@@ -191,13 +191,13 @@ public class ItemServiceImpl implements ItemService {
     private void validateWhenSaveItem(ItemDto itemDto, Long userId) {
         checkUserById(userId);
         if (itemDto.getAvailable() == null) {
-            throw new BadRequestException("У вещи нету статуса аренды");
+            throw new BadRequestException();
         }
         if (itemDto.getName() == null || itemDto.getName().isBlank()) {
-            throw new BadRequestException("У вещи нету названия");
+            throw new BadRequestException();
         }
         if (itemDto.getDescription() == null || itemDto.getDescription().isBlank()) {
-            throw new BadRequestException("У вещи нету описания");
+            throw new BadRequestException();
         }
     }
 
@@ -205,10 +205,10 @@ public class ItemServiceImpl implements ItemService {
         checkUserById(userId);
         checkItemById(itemId);
         if (comment.getText().isBlank()) {
-            throw new BadRequestException("Комментарий не может быть пустым");
+            throw new BadRequestException();
         }
         if (bookingRepository.findByBookerIdAndItemId(userId, itemId) == null) {
-            throw new BadRequestException("Пользователь id = " + userId + " не арендовывал предмет id = " + itemId);
+            throw new BadRequestException();
         }
         List<Booking> bookings = bookingRepository.findByBookerIdAndItemId(userId, itemId);
         Booking checkBooking = null;
@@ -219,7 +219,7 @@ public class ItemServiceImpl implements ItemService {
             }
         }
         if (checkBooking == null) {
-            throw new BadRequestException("Бронирование не подтверждено или не закончился срок аренды ");
+            throw new BadRequestException();
         }
     }
 
