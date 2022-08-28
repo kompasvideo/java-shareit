@@ -12,7 +12,6 @@ import org.mockito.quality.Strictness;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import ru.practicum.shareit.exceptions.ForbiddenException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.OwnerItemDto;
@@ -34,16 +33,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class ItemControllerTest {
+    private final ObjectMapper mapper = new ObjectMapper();
     @Mock
     private ItemService itemService;
-
     @InjectMocks
     private ItemController itemController;
-
     private MockMvc mvc;
-
-    private final ObjectMapper mapper = new ObjectMapper();
-
     private ItemDto itemDto;
     private OwnerItemDto ownerItemDto;
 
@@ -79,11 +74,11 @@ public class ItemControllerTest {
             owner,
             null
         );
-         ownerItemDto = new OwnerItemDto();
-         ownerItemDto.setId(1L);
-         ownerItemDto.setName("name");
-         ownerItemDto.setDescription("description");
-         ownerItemDto.setAvailable(true);
+        ownerItemDto = new OwnerItemDto();
+        ownerItemDto.setId(1L);
+        ownerItemDto.setName("name");
+        ownerItemDto.setDescription("description");
+        ownerItemDto.setAvailable(true);
     }
 
     @Test
@@ -156,7 +151,7 @@ public class ItemControllerTest {
 
     @Test
     void searchItems() throws Exception {
-        when(itemService.searchItem( anyLong(), anyString()))
+        when(itemService.searchItem(anyLong(), anyString()))
             .thenReturn(List.of(itemDto));
 
         mvc.perform(get("/items/search")

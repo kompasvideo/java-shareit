@@ -26,7 +26,8 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,22 +35,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class BookingControllerTest {
+    private final ObjectMapper mapper = new ObjectMapper();
+    private final List<BookingDto> result = new ArrayList<>();
     @Mock
     private BookingService bookingService;
-
     @InjectMocks
     private BookingController bookingController;
-
     private BookingCreateDto bookingCreateDto;
     private BookingDto bookingDto;
-
     private Booking booking;
-
     private MockMvc mvc;
-
-    private final ObjectMapper mapper = new ObjectMapper();
-
-    private final List<BookingDto> result = new ArrayList<>();
 
     @BeforeEach
     void init() {

@@ -13,9 +13,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
+
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
@@ -28,17 +30,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class ItemRequestControllerTest {
+    private final ObjectMapper mapper = new ObjectMapper();
     @Mock
     private ItemRequestService itemRequestService;
-
     @InjectMocks
     private ItemRequestController controller;
-
     private ItemRequestDto itemRequestDto;
-
     private MockMvc mvc;
-
-    private final ObjectMapper mapper = new ObjectMapper();
 
     @BeforeEach
     void init() {
@@ -56,7 +54,7 @@ public class ItemRequestControllerTest {
 
     @Test
     void addNewRequest() throws Throwable {
-        when(itemRequestService.addNewRequest( anyLong(), any()))
+        when(itemRequestService.addNewRequest(anyLong(), any()))
             .thenReturn(itemRequestDto);
 
         mvc.perform(post("/requests")

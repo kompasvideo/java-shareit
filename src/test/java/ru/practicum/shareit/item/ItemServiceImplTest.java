@@ -382,6 +382,6 @@ class ItemServiceImplTest {
             mockBookingRepository,mockCommentRepository,modelMapper, mockItemRequestService);
         ItemDto itemDtoResult = new ItemDto(1L,itemS.getName(),itemS.getDescription(),itemS.getAvailable(),
             0);
-        assertThrows(NotFoundException.class, () ->itemService.saveItem(userId,itemDto));
+        assertThrows(NotFoundException.class, () -> itemService.saveItem(userId, itemDto));
     }
 }

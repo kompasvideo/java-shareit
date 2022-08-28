@@ -7,6 +7,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.practicum.shareit.exceptions.BadRequestException;
 import ru.practicum.shareit.user.model.User;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,9 +32,9 @@ class UserServiceImplTest {
             .thenReturn(userReturn);
         UserService userService = new UserServiceImpl(mockUserRepository);
         User userTest = userService.saveUser(user);
-        Assertions.assertEquals(userReturn.getId(),userTest.getId());
-        Assertions.assertEquals(userReturn.getEmail(),userTest.getEmail());
-        Assertions.assertEquals(userReturn.getName(),userTest.getName());
+        Assertions.assertEquals(userReturn.getId(), userTest.getId());
+        Assertions.assertEquals(userReturn.getEmail(), userTest.getEmail());
+        Assertions.assertEquals(userReturn.getName(), userTest.getName());
     }
 
     @Test
@@ -45,7 +46,7 @@ class UserServiceImplTest {
             .when(mockUserRepository.save(user))
             .thenThrow(RuntimeException.class);
         UserService userService = new UserServiceImpl(mockUserRepository);
-        Assertions.assertThrows(RuntimeException.class,() -> userService.saveUser(user));
+        Assertions.assertThrows(RuntimeException.class, () -> userService.saveUser(user));
     }
 
     @Test
@@ -53,7 +54,7 @@ class UserServiceImplTest {
         User user = new User();
         user.setName("user");
         UserService userService = new UserServiceImpl(mockUserRepository);
-        Assertions.assertThrows(BadRequestException.class,() -> userService.saveUser(user));
+        Assertions.assertThrows(BadRequestException.class, () -> userService.saveUser(user));
     }
 
     @Test
@@ -62,7 +63,7 @@ class UserServiceImplTest {
         user.setName("user");
         user.setEmail("user.com");
         UserService userService = new UserServiceImpl(mockUserRepository);
-        Assertions.assertThrows(BadRequestException.class,() -> userService.saveUser(user));
+        Assertions.assertThrows(BadRequestException.class, () -> userService.saveUser(user));
     }
 
     @Test
@@ -93,9 +94,9 @@ class UserServiceImplTest {
             .thenReturn(userReturnSave);
         UserService userService = new UserServiceImpl(mockUserRepository);
         User userTest = userService.updateUser(userId, user);
-        Assertions.assertEquals(userReturnSave.getId(),userTest.getId());
-        Assertions.assertEquals(userReturnSave.getEmail(),userTest.getEmail());
-        Assertions.assertEquals(userReturnSave.getName(),userTest.getName());
+        Assertions.assertEquals(userReturnSave.getId(), userTest.getId());
+        Assertions.assertEquals(userReturnSave.getEmail(), userTest.getEmail());
+        Assertions.assertEquals(userReturnSave.getName(), userTest.getName());
     }
 
     @Test
@@ -111,11 +112,10 @@ class UserServiceImplTest {
             .thenReturn(users);
         UserService userService = new UserServiceImpl(mockUserRepository);
         List<User> userTests = userService.getAllUsers();
-        Assertions.assertEquals(userReturn.getId(),userTests.get(0).getId());
-        Assertions.assertEquals(userReturn.getEmail(),userTests.get(0).getEmail());
-        Assertions.assertEquals(userReturn.getName(),userTests.get(0).getName());
+        Assertions.assertEquals(userReturn.getId(), userTests.get(0).getId());
+        Assertions.assertEquals(userReturn.getEmail(), userTests.get(0).getEmail());
+        Assertions.assertEquals(userReturn.getName(), userTests.get(0).getName());
     }
-
 
 
     @Test
@@ -131,9 +131,9 @@ class UserServiceImplTest {
             .thenReturn(optionalUserReturn);
         UserService userService = new UserServiceImpl(mockUserRepository);
         User userTest = userService.getUser(userId);
-        Assertions.assertEquals(userReturn.getId(),userTest.getId());
-        Assertions.assertEquals(userReturn.getEmail(),userTest.getEmail());
-        Assertions.assertEquals(userReturn.getName(),userTest.getName());
+        Assertions.assertEquals(userReturn.getId(), userTest.getId());
+        Assertions.assertEquals(userReturn.getEmail(), userTest.getEmail());
+        Assertions.assertEquals(userReturn.getName(), userTest.getName());
     }
 
     @Test

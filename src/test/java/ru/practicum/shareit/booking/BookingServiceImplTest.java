@@ -5,13 +5,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.Status;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
@@ -229,11 +231,11 @@ public class BookingServiceImplTest {
         listBookings.add(booking);
         PageRequest pageRequest = PageRequest.of(0, 10);
         Pageable pageable = pageRequest;
-        final int start = (int)pageable.getOffset();
+        final int start = (int) pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), listBookings.size());
         Page<Booking> pBookings = new PageImpl<>(listBookings.subList(start, end), pageable, listBookings.size());
         Mockito
-            .when(mockBookingRepository.findAllByBookerIdOrderByEndDesc(userId, pageRequest ))
+            .when(mockBookingRepository.findAllByBookerIdOrderByEndDesc(userId, pageRequest))
             .thenReturn(pBookings);
         ModelMapper modelMapper = new ModelMapper();
         BookingService bookingService = new BookingServiceImpl(mockBookingRepository, mockUserRepository,
@@ -292,7 +294,7 @@ public class BookingServiceImplTest {
         listBookings.add(booking);
         PageRequest pageRequest = PageRequest.of(0, 10);
         Pageable pageable = pageRequest;
-        final int start = (int)pageable.getOffset();
+        final int start = (int) pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), listBookings.size());
         Page<Booking> pBookings = new PageImpl<>(listBookings.subList(start, end), pageable, listBookings.size());
         Mockito

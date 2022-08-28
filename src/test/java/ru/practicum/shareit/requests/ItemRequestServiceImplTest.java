@@ -6,7 +6,6 @@ import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.*;
-import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
@@ -123,7 +122,7 @@ class ItemRequestServiceImplTest {
         itemRequests.add(itemRequest);
         PageRequest pageRequest = PageRequest.of(from, size, Sort.by("created"));
         Pageable pageable = pageRequest;
-        final int start = (int)pageable.getOffset();
+        final int start = (int) pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), itemRequests.size());
         Page<ItemRequest> pItemRequests = new PageImpl<>(itemRequests.subList(start, end), pageable, itemRequests.size());
         Mockito
@@ -311,7 +310,7 @@ class ItemRequestServiceImplTest {
         itemRequests.add(itemRequest);
         PageRequest pageRequest = PageRequest.of(from, size, Sort.by("created"));
         Pageable pageable = pageRequest;
-        final int start = (int)pageable.getOffset();
+        final int start = (int) pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), itemRequests.size());
         Page<ItemRequest> pItemRequests = new PageImpl<>(itemRequests.subList(start, end), pageable, itemRequests.size());
         Mockito
@@ -320,6 +319,6 @@ class ItemRequestServiceImplTest {
         ModelMapper modelMapper = new ModelMapper();
         ItemRequestService itemRequestService = new ItemRequestServiceImpl(mockItemRequestRepository, mockUserRepository,
             mockItemRepository, modelMapper);
-        assertThrows(ValidationException.class, () ->itemRequestService.getListRequestAllUsers(userId, -1, size));
+        assertThrows(ValidationException.class, () -> itemRequestService.getListRequestAllUsers(userId, -1, size));
     }
 }
