@@ -117,7 +117,7 @@
 							<goals>
 								<goal>check</goal>
 							</goals>
-							<phase>compile</phase>
+							<phase>test</phase>
 						</execution>
 					</executions>
 					<dependencies>
