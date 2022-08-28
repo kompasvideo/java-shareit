@@ -113,6 +113,7 @@
 					</configuration>
 					<executions>
 						<execution>
+							<id>default-jacoco-check</id>
 							<goals>
 								<goal>check</goal>
 							</goals>
