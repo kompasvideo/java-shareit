@@ -117,7 +117,7 @@
 							<goals>
 								<goal>check</goal>
 							</goals>
-							<phase>test</phase>
+							<phase>compile</phase>
 						</execution>
 					</executions>
 					<dependencies>
@@ -138,6 +138,7 @@
 					</configuration>
 					<executions>
 						<execution>
+							<phase>compile</phase>
 							<goals>
 								<goal>check</goal>
 							</goals>
@@ -160,6 +161,7 @@
 						</execution>
 						<execution>
 							<id>jacoco-check</id>
+							<phase>compile</phase>
 							<goals>
 								<goal>check</goal>
 							</goals>
