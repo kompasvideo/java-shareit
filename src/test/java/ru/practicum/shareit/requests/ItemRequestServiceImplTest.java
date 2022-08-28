@@ -33,7 +33,7 @@ class ItemRequestServiceImplTest {
     ItemRepository mockItemRepository;
 
     @Test
-    void addNewRequest() throws Throwable {
+    void addNewRequest() {
         Long userId = 1L;
         ItemRequestInputDto itemRequestInputDto = new ItemRequestInputDto();
         itemRequestInputDto.setDescription("Хотел бы воспользоваться щёткой для обуви");
@@ -68,7 +68,7 @@ class ItemRequestServiceImplTest {
     }
 
     @Test
-    void getListRequest() throws Throwable {
+    void getListRequest() {
         Long userId = 1L;
         User user = new User();
         user.setId(1L);
@@ -90,7 +90,7 @@ class ItemRequestServiceImplTest {
     }
 
     @Test
-    void getListRequestAllUsers() throws Throwable {
+    void getListRequestAllUsers() {
         long userId = 1;
         int from = 0;
         int size = 20;
@@ -139,7 +139,7 @@ class ItemRequestServiceImplTest {
     }
 
     @Test
-    void getOneRequest() throws Throwable {
+    void getOneRequest() {
         Long userId = 1L;
         Long requestId = 1L;
         User user2 = new User();
@@ -278,7 +278,7 @@ class ItemRequestServiceImplTest {
     }
 
     @Test
-    void getListRequestAllUsersWrongFrom() throws Throwable {
+    void getListRequestAllUsersWrongFrom() {
         long userId = 1;
         int from = 0;
         int size = 20;

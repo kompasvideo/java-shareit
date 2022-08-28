@@ -19,7 +19,7 @@ class UserServiceImplTest {
     UserRepository mockUserRepository;
 
     @Test
-    void saveUser_UserCreate() throws Throwable {
+    void saveUser_UserCreate() {
         User user = new User();
         user.setName("user");
         user.setEmail("user@user.com");
@@ -67,7 +67,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updateUser() throws Throwable {
+    void updateUser() {
         User user = new User();
         user.setName("update");
         user.setEmail("update@user.com");

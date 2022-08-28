@@ -38,9 +38,9 @@ public class BookingServiceImpl implements BookingService {
         validateForCreate(bookingCreateDto, userId);
         Booking booking = modelMapper.map(bookingCreateDto, Booking.class);
         Optional<User> optionalUser = userRepository.findById(userId);
-        booking.setBooker(optionalUser.get());
+        booking.setBooker(optionalUser.orElseThrow());
         Optional<Item> optionalItem = itemRepository.findById(bookingCreateDto.getItemId());
-        booking.setItem(optionalItem.get());
+        booking.setItem(optionalItem.orElseThrow());
         bookingRepository.save(booking);
         return modelMapper.map(booking, BookingCreateDto.class);
     }
@@ -50,7 +50,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingDto update(Long userId, Long bookingId, Boolean approved) {
         validateForSetStatus(userId, bookingId, approved);
         Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
-        Booking booking = optionalBooking.get();
+        Booking booking = optionalBooking.orElseThrow();
 
         if (approved.equals(Boolean.TRUE)) {
             booking.setStatus(Status.APPROVED);
@@ -169,7 +169,7 @@ public class BookingServiceImpl implements BookingService {
         checkUserById(userId);
         checkItemById(bookingCreateDto.getItemId());
         Optional<Item> optionalItem = itemRepository.findById(bookingCreateDto.getItemId());
-        if (optionalItem.get().getAvailable().equals(Boolean.FALSE)) {
+        if (Boolean.FALSE.equals(optionalItem.orElseThrow().getAvailable())) {
             throw new BadRequestException();
         }
 
@@ -180,7 +180,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         Optional<Item> item = itemRepository.findById(bookingCreateDto.getItemId());
-        if (item.get().getOwner().getId().equals(userId)) {
+        if (item.orElseThrow().getOwner().getId().equals(userId)) {
             throw new NotFoundException("Пользователь id = "
                 + userId + " является владельцем предмета id = " + bookingCreateDto.getItemId());
         }
@@ -194,16 +194,16 @@ public class BookingServiceImpl implements BookingService {
         }
 
         Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
-        if (optionalBooking.get().getStatus().equals(Status.APPROVED)
+        if (Status.APPROVED.equals(optionalBooking.orElseThrow().getStatus())
             && approved.equals(Boolean.TRUE)) {
             throw new BadRequestException();
         }
         Long id = optionalBooking
-            .get()
+            .orElseThrow()
             .getItem().getId();
         Optional<Item> optionalItem = itemRepository.findById(id);
         Long ownerId = optionalItem
-            .get()
+            .orElseThrow()
             .getOwner().getId();
 
         if (!ownerId.equals(userId)) {

@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public interface ItemRequestService {
-    ItemRequestDto addNewRequest(long userId, ItemRequestInputDto itemRequestInputDto) throws Throwable;
+    ItemRequestDto addNewRequest(long userId, ItemRequestInputDto itemRequestInputDto);
 
-    List<ItemRequestDto> getListRequest(long userId) throws Throwable;
+    List<ItemRequestDto> getListRequest(long userId);
 
-    List<ItemRequestDto> getListRequestAllUsers(long userId, int from, int size) throws Throwable;
+    List<ItemRequestDto> getListRequestAllUsers(long userId, int from, int size);
 
-    ItemRequestDto getOneRequest(long userId, long requestId) throws Throwable;
+    ItemRequestDto getOneRequest(long userId, long requestId);
 
     void responsesAddItems(Item item, long requestId);
 

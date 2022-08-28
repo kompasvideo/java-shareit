@@ -21,7 +21,7 @@ public class ErrorHandler {
      */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleIncorrectParameterException(final Throwable e) {
+    public ErrorResponse handleIncorrectParameterException(final InternalServerError e) {
         log.warn(e.getMessage());
         return new ErrorResponse(e.getMessage());
     }

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.BadRequestException;
+import ru.practicum.shareit.exceptions.InternalServerError;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.user.model.User;
 
@@ -26,16 +27,16 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public User saveUser(User user) throws Throwable {
+    public User saveUser(User user) {
         validate(user);
         return userRepository.save(user);
     }
 
     @Transactional
     @Override
-    public User updateUser(long userId, User updatedUser) throws Throwable {
+    public User updateUser(long userId, User updatedUser) {
         validateForUpdateUser(userId, updatedUser);
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId).orElseThrow();
         if (updatedUser.getName() != null)
             user.setName(updatedUser.getName());
         if (updatedUser.getEmail() != null)
@@ -48,7 +49,7 @@ public class UserServiceImpl implements UserService {
     public User getUser(long userId) {
         userIdValidate(userId);
         Optional<User> optionalUser = userRepository.findById(userId);
-        return optionalUser.get();
+        return optionalUser.orElseThrow();
     }
 
     @Transactional
@@ -68,17 +69,17 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void validateForUpdateUser(Long userId, User user) throws Throwable {
+    private void validateForUpdateUser(Long userId, User user) {
         userIdValidate(userId);
         if (user.getEmail() != null) {
             emailValidate(user.getEmail());
         }
     }
 
-    private void emailValidate(String email) throws Throwable {
+    private void emailValidate(String email) {
         List<User> users = userRepository.findAll();
         if (users.stream().anyMatch(user -> user.getEmail().equals(email))) {
-            throw new Throwable();
+            throw new InternalServerError();
         }
     }
 

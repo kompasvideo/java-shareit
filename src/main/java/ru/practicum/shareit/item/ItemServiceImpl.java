@@ -43,7 +43,7 @@ public class ItemServiceImpl implements ItemService {
         validateWhenSaveItem(itemDto, userId);
         Item item = modelMapper.map(itemDto, Item.class);
         Optional<User> optionalUser = userRepository.findById(userId);
-        item.setOwner(optionalUser.get());
+        item.setOwner(optionalUser.orElseThrow());
         if (itemDto.getRequestId() != 0) {
             itemRequestService.responsesAddItems(item, itemDto.getRequestId());
             ItemRequest itemRequest = itemRequestService.findById(itemDto.getRequestId());
@@ -59,7 +59,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto updateItem(long userId, long itemId, ItemDto itemDto) {
         validateWhenUpdateItem(userId, itemId);
         Optional<Item> optionalItem = itemRepository.findById(itemId);
-        Item item = optionalItem.get();
+        Item item = optionalItem.orElseThrow();
         if (itemDto.getName() != null)
             item.setName(itemDto.getName());
         if (itemDto.getDescription() != null)
@@ -76,7 +76,7 @@ public class ItemServiceImpl implements ItemService {
         checkUserById(userId);
         checkItemById(itemId);
         Optional<Item> optionalFoundItem = itemRepository.findById(itemId);
-        Item foundItem = optionalFoundItem.get();
+        Item foundItem = optionalFoundItem.orElseThrow();
         List<CommentDto> commentsDto = new ArrayList<>();
         List<Comment> comments = commentRepository.findAllByItemId(itemId);
         for (Comment comment : comments) {
@@ -84,7 +84,7 @@ public class ItemServiceImpl implements ItemService {
             commentDto.setId(comment.getId());
             commentDto.setText(comment.getText());
             Optional<User> optionalUser = userRepository.findById(comment.getUser().getId());
-            commentDto.setAuthorName(optionalUser.get().getName());
+            commentDto.setAuthorName(optionalUser.orElseThrow().getName());
             commentDto.setCreated(comment.getCreated());
             commentsDto.add(commentDto);
         }
@@ -126,12 +126,12 @@ public class ItemServiceImpl implements ItemService {
     public CommentDto addComment(long userId, long itemId, Comment comment) {
         validateWhenAddComment(userId, itemId, comment);
         comment.setItemId(itemId);
-        comment.setUser(userRepository.findById(userId).get());
+        comment.setUser(userRepository.findById(userId).orElseThrow());
         commentRepository.save(comment);
         CommentDto commentDto = modelMapper.map(comment, CommentDto.class);
         commentDto.setId(comment.getId());
         commentDto.setText(comment.getText());
-        commentDto.setAuthorName(userRepository.findById(userId).get().getName());
+        commentDto.setAuthorName(userRepository.findById(userId).orElseThrow().getName());
         commentDto.setCreated(comment.getCreated());
         return commentDto;
     }

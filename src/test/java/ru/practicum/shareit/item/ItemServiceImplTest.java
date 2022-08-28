@@ -241,7 +241,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void addComment2() {
+    void addComment() {
         Long userId = 1L;
         Long itemId = 2L;
         Comment comment = new Comment();
