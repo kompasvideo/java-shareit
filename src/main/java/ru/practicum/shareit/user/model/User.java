@@ -1,8 +1,8 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.model;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -12,6 +12,9 @@ import java.util.Objects;
 /**
  * // Класс пользователя
  */
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Getter
 @Setter

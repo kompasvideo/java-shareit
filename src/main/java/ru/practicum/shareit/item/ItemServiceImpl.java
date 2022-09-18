@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.item;
+package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,18 +8,23 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.Status;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
-import ru.practicum.shareit.booking.item.dto.CommentDto;
-import ru.practicum.shareit.booking.item.dto.ItemDto;
-import ru.practicum.shareit.booking.item.dto.OwnerItemDto;
-import ru.practicum.shareit.booking.item.model.Comment;
-import ru.practicum.shareit.booking.item.model.Item;
 import ru.practicum.shareit.exceptions.BadRequestException;
 import ru.practicum.shareit.exceptions.ForbiddenException;
 import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.OwnerItemDto;
+import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.requests.ItemRequestService;
+import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.model.User;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,22 +35,31 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
     private final ModelMapper modelMapper;
+    private final ItemRequestService itemRequestService;
 
     @Transactional
     @Override
     public ItemDto saveItem(long userId, ItemDto itemDto) {
         validateWhenSaveItem(itemDto, userId);
         Item item = modelMapper.map(itemDto, Item.class);
-        item.setOwner(userRepository.findById(userId).get());
+        Optional<User> optionalUser = userRepository.findById(userId);
+        item.setOwner(optionalUser.orElseThrow());
+        if (itemDto.getRequestId() != 0) {
+            itemRequestService.responsesAddItems(item, itemDto.getRequestId());
+            ItemRequest itemRequest = itemRequestService.findById(itemDto.getRequestId());
+            item.setRequest(itemRequest);
+        }
         Item itemS = itemRepository.save(item);
-        return ItemMapper.toItemDto(itemS);
+        itemDto.setId(itemS.getId());
+        return itemDto;
     }
 
     @Transactional
     @Override
     public ItemDto updateItem(long userId, long itemId, ItemDto itemDto) {
         validateWhenUpdateItem(userId, itemId);
-        Item item = itemRepository.findById(itemId).get();
+        Optional<Item> optionalItem = itemRepository.findById(itemId);
+        Item item = optionalItem.orElseThrow();
         if (itemDto.getName() != null)
             item.setName(itemDto.getName());
         if (itemDto.getDescription() != null)
@@ -61,21 +75,23 @@ public class ItemServiceImpl implements ItemService {
     public OwnerItemDto getItem(long userId, long itemId) {
         checkUserById(userId);
         checkItemById(itemId);
-        Item foundItem = itemRepository.findById(itemId).get();
+        Optional<Item> optionalFoundItem = itemRepository.findById(itemId);
+        Item foundItem = optionalFoundItem.orElseThrow();
         List<CommentDto> commentsDto = new ArrayList<>();
         List<Comment> comments = commentRepository.findAllByItemId(itemId);
         for (Comment comment : comments) {
             CommentDto commentDto = new CommentDto();
             commentDto.setId(comment.getId());
             commentDto.setText(comment.getText());
-            commentDto.setAuthorName(userRepository.findById(comment.getUser().getId()).get().getName());
+            Optional<User> optionalUser = userRepository.findById(comment.getUser().getId());
+            commentDto.setAuthorName(optionalUser.orElseThrow().getName());
             commentDto.setCreated(comment.getCreated());
             commentsDto.add(commentDto);
         }
         if (foundItem.getOwner().getId().equals(userId)) {
             return getItemFoundDto(foundItem, userId, commentsDto);
         }
-        return ItemMapper.toItemFoundDto(foundItem,null,null, commentsDto);
+        return ItemMapper.toItemFoundDto(foundItem, null, null, commentsDto);
     }
 
     @Transactional(readOnly = true)
@@ -110,12 +126,12 @@ public class ItemServiceImpl implements ItemService {
     public CommentDto addComment(long userId, long itemId, Comment comment) {
         validateWhenAddComment(userId, itemId, comment);
         comment.setItemId(itemId);
-        comment.setUser(userRepository.findById(userId).get());
+        comment.setUser(userRepository.findById(userId).orElseThrow());
         commentRepository.save(comment);
         CommentDto commentDto = modelMapper.map(comment, CommentDto.class);
         commentDto.setId(comment.getId());
         commentDto.setText(comment.getText());
-        commentDto.setAuthorName(userRepository.findById(userId).get().getName());
+        commentDto.setAuthorName(userRepository.findById(userId).orElseThrow().getName());
         commentDto.setCreated(comment.getCreated());
         return commentDto;
     }
@@ -175,13 +191,13 @@ public class ItemServiceImpl implements ItemService {
     private void validateWhenSaveItem(ItemDto itemDto, Long userId) {
         checkUserById(userId);
         if (itemDto.getAvailable() == null) {
-            throw new BadRequestException("У вещи нету статуса аренды");
+            throw new BadRequestException();
         }
         if (itemDto.getName() == null || itemDto.getName().isBlank()) {
-            throw new BadRequestException("У вещи нету названия");
+            throw new BadRequestException();
         }
         if (itemDto.getDescription() == null || itemDto.getDescription().isBlank()) {
-            throw new BadRequestException("У вещи нету описания");
+            throw new BadRequestException();
         }
     }
 
@@ -189,10 +205,10 @@ public class ItemServiceImpl implements ItemService {
         checkUserById(userId);
         checkItemById(itemId);
         if (comment.getText().isBlank()) {
-            throw new BadRequestException("Комментарий не может быть пустым");
+            throw new BadRequestException();
         }
         if (bookingRepository.findByBookerIdAndItemId(userId, itemId) == null) {
-            throw new BadRequestException("Пользователь id = " + userId + " не арендовывал предмет id = " + itemId);
+            throw new BadRequestException();
         }
         List<Booking> bookings = bookingRepository.findByBookerIdAndItemId(userId, itemId);
         Booking checkBooking = null;
@@ -203,28 +219,31 @@ public class ItemServiceImpl implements ItemService {
             }
         }
         if (checkBooking == null) {
-            throw new BadRequestException("Бронирование не подтверждено или не закончился срок аренды ");
+            throw new BadRequestException();
         }
     }
 
     private void validateWhenUpdateItem(Long userId, Long itemId) {
         checkUserById(userId);
-        if (itemRepository.findItemsByOwnerId(userId) == null) {
+        List<Item> items = itemRepository.findItemsByOwnerId(userId);
+        if (items == null) {
             throw new NotFoundException("У пользователя id = " + userId + " нету вещей для аренды");
         }
-        if (itemRepository.findItemsByOwnerId(userId).stream().noneMatch(item -> item.getId().equals(itemId))) {
+        if (items.stream().noneMatch(item -> item.getId().equals(itemId))) {
             throw new ForbiddenException("У пользователя id = " + userId + " нету прав на вещь id = " + itemId);
         }
     }
 
     private void checkUserById(Long userId) {
-        if (userRepository.findById(userId).isEmpty()) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) {
             throw new NotFoundException("Пользователь с id = " + userId + " не найден");
         }
     }
 
     private void checkItemById(Long itemId) {
-        if (itemRepository.findById(itemId).isEmpty()) {
+        Optional<Item> optionalItem = itemRepository.findById(itemId);
+        if (optionalItem.isEmpty()) {
             throw new NotFoundException("Вещь id = " + itemId + " не найдена");
         }
     }

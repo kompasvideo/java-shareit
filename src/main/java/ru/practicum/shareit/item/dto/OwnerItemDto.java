@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.item.dto;
+package ru.practicum.shareit.item.dto;
 
 import lombok.Builder;
 import lombok.Getter;

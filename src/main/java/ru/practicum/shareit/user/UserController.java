@@ -2,6 +2,7 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
@@ -21,12 +22,12 @@ public class UserController {
      * @return
      */
     @PostMapping
-    public User saveNewUser(@RequestBody User user) throws Throwable {
+    public User saveNewUser(@RequestBody User user) {
         return userService.saveUser(user);
     }
 
     @PatchMapping("/{id}")
-    public User updateUser(@PathVariable long id, @RequestBody User user) throws Throwable {
+    public User updateUser(@PathVariable long id, @RequestBody User user) {
         return userService.updateUser(id, user);
     }
 

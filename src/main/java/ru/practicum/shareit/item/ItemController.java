@@ -1,11 +1,11 @@
-package ru.practicum.shareit.booking.item;
+package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.item.dto.CommentDto;
-import ru.practicum.shareit.booking.item.dto.ItemDto;
-import ru.practicum.shareit.booking.item.dto.OwnerItemDto;
-import ru.practicum.shareit.booking.item.model.Comment;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.OwnerItemDto;
+import ru.practicum.shareit.item.model.Comment;
 
 import java.util.List;
 
@@ -13,8 +13,8 @@ import java.util.List;
  * // Контролёр для вещей
  */
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/items")
+@RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
 
@@ -40,7 +40,6 @@ public class ItemController {
     public List<OwnerItemDto> getAllItems(@RequestHeader("X-Sharer-User-Id") long userId) {
         return itemService.getAllItem(userId);
     }
-
 
 
     @GetMapping("/search")

@@ -5,9 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.BadRequestException;
+import ru.practicum.shareit.exceptions.InternalServerError;
 import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.user.model.User;
+
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,16 +27,16 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public User saveUser(User user) throws Throwable {
+    public User saveUser(User user) {
         validate(user);
         return userRepository.save(user);
     }
 
     @Transactional
     @Override
-    public User updateUser(long userId, User updatedUser) throws Throwable {
+    public User updateUser(long userId, User updatedUser) {
         validateForUpdateUser(userId, updatedUser);
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId).orElseThrow();
         if (updatedUser.getName() != null)
             user.setName(updatedUser.getName());
         if (updatedUser.getEmail() != null)
@@ -44,7 +48,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUser(long userId) {
         userIdValidate(userId);
-        return userRepository.findById(userId).get();
+        Optional<User> optionalUser = userRepository.findById(userId);
+        return optionalUser.orElseThrow();
     }
 
     @Transactional
@@ -55,30 +60,32 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private void validate(@Valid User user) throws Throwable {
+    private void validate(@Valid User user) {
         if (user.getEmail() == null || user.getEmail().isBlank()) {
-            throw new BadRequestException("email не может быть пустым");
+            throw new BadRequestException();
         }
         if (!user.getEmail().contains("@")) {
-            throw new BadRequestException("email не имеет @");
+            throw new BadRequestException();
         }
     }
 
-    private void validateForUpdateUser(Long userId, User user) throws Throwable {
+    private void validateForUpdateUser(Long userId, User user) {
         userIdValidate(userId);
         if (user.getEmail() != null) {
             emailValidate(user.getEmail());
         }
     }
 
-    private void emailValidate(String email) throws Throwable {
-        if (userRepository.findAll().stream().anyMatch(user -> user.getEmail().equals(email))) {
-            throw new Throwable();
+    private void emailValidate(String email) {
+        List<User> users = userRepository.findAll();
+        if (users.stream().anyMatch(user -> user.getEmail().equals(email))) {
+            throw new InternalServerError();
         }
     }
 
     private void userIdValidate(Long userId) {
-        if (userRepository.findById(userId).isEmpty()) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) {
             throw new NotFoundException("Юзер не найден, id = " + userId);
         }
     }

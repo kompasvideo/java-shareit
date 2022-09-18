@@ -21,7 +21,7 @@ public class ErrorHandler {
      */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleIncorrectParameterException(final Throwable e) {
+    public ErrorResponse handleIncorrectParameterException(final InternalServerError e) {
         log.warn(e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
@@ -54,6 +54,12 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
+    /**
+     * Все ситуаций, когда  что сервер понял запрос, но отказывается его авторизовать, код 403
+     *
+     * @param e
+     * @return
+     */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public Map<String, String> handleForbiddenException(final ForbiddenException e) {

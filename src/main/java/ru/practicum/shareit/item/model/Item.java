@@ -1,10 +1,10 @@
-package ru.practicum.shareit.booking.item.model;
+package ru.practicum.shareit.item.model;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 import org.hibernate.Hibernate;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.requests.model.ItemRequest;
+import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -12,6 +12,9 @@ import java.util.Objects;
 /**
  * Класс вещь
  */
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Getter
 @Setter
@@ -32,8 +35,9 @@ public class Item {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
-    @Column(name = "request_id")
-    private Long requestId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "request_id")
+    private ItemRequest request;
 
     @Override
     public boolean equals(Object o) {

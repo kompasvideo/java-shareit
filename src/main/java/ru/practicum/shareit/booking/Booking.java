@@ -1,10 +1,14 @@
 package ru.practicum.shareit.booking;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.Hibernate;
 import ru.practicum.shareit.Status;
-import ru.practicum.shareit.booking.item.model.Item;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -12,7 +16,8 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "bookings")
 public class Booking {
@@ -35,7 +40,7 @@ public class Booking {
     private User booker;
 
     @Enumerated(EnumType.STRING)
-    @Builder.Default
+    //@Builder.Default
     private Status status = Status.WAITING;
 
     @Override

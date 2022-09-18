@@ -1,9 +1,9 @@
-package ru.practicum.shareit.booking.item;
+package ru.practicum.shareit.item;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import ru.practicum.shareit.booking.item.model.Item;
+import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
@@ -18,4 +18,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findItemsByOwnerId(long userId);
 
     List<Item> findAllByOwnerId(long userId);
+
+    List<Item> findAllByRequestId(long requestId);
 }
