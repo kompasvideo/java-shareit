@@ -97,8 +97,9 @@ public class ItemServiceImpl implements ItemService {
     @Transactional(readOnly = true)
     @Override
     public List<OwnerItemDto> getAllItem(long userId) {
+
         checkUserById(userId);
-        List<Item> items = itemRepository.findAllByOwnerId(userId);
+        List<Item> items = itemRepository.findAllByOwnerIdOrderByIdAsc(userId);
 
         List<OwnerItemDto> itemsDto = new ArrayList<>();
 
@@ -124,7 +125,12 @@ public class ItemServiceImpl implements ItemService {
     @Transactional()
     @Override
     public CommentDto addComment(long userId, long itemId, Comment comment) {
+        log.info("1");
+        log.info("comment: " + comment);
+        log.info("userId: " + userId);
+        log.info("itemId: " + itemId);
         validateWhenAddComment(userId, itemId, comment);
+        log.info("2");
         comment.setItemId(itemId);
         comment.setUser(userRepository.findById(userId).orElseThrow());
         commentRepository.save(comment);
@@ -214,13 +220,19 @@ public class ItemServiceImpl implements ItemService {
         Booking checkBooking = null;
         for (Booking booking : bookings) {
             if (booking.getStatus().equals(Status.APPROVED) && booking.getEnd().isBefore(LocalDateTime.now())) {
+                log.info("end " + booking.getEnd());
+                log.info("local " + LocalDateTime.now());
+                log.info("validateWhenAddComment 9");
                 checkBooking = booking;
                 break;
             }
         }
+        log.info("validateWhenAddComment 10");
         if (checkBooking == null) {
+            log.info("validateWhenAddComment 11");
             throw new BadRequestException();
         }
+        log.info("validateWhenAddComment 12");
     }
 
     private void validateWhenUpdateItem(Long userId, Long itemId) {
