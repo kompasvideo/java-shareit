@@ -132,13 +132,15 @@ public class ItemServiceImpl implements ItemService {
         validateWhenAddComment(userId, itemId, comment);
         log.info("2");
         comment.setItemId(itemId);
+        comment.setCreated(LocalDateTime.now());
         comment.setUser(userRepository.findById(userId).orElseThrow());
         commentRepository.save(comment);
         CommentDto commentDto = modelMapper.map(comment, CommentDto.class);
-        commentDto.setId(comment.getId());
+        User user = userRepository.findById(userId).orElseThrow();
+        commentDto.setId(user.getId());
         commentDto.setText(comment.getText());
-        commentDto.setAuthorName(userRepository.findById(userId).orElseThrow().getName());
-        commentDto.setCreated(comment.getCreated());
+        commentDto.setAuthorName(user.getName());
+        commentDto.setCreated(LocalDateTime.now());
         return commentDto;
     }
 
@@ -220,19 +222,13 @@ public class ItemServiceImpl implements ItemService {
         Booking checkBooking = null;
         for (Booking booking : bookings) {
             if (booking.getStatus().equals(Status.APPROVED) && booking.getEnd().isBefore(LocalDateTime.now())) {
-                log.info("end " + booking.getEnd());
-                log.info("local " + LocalDateTime.now());
-                log.info("validateWhenAddComment 9");
                 checkBooking = booking;
                 break;
             }
         }
-        log.info("validateWhenAddComment 10");
         if (checkBooking == null) {
-            log.info("validateWhenAddComment 11");
             throw new BadRequestException();
         }
-        log.info("validateWhenAddComment 12");
     }
 
     private void validateWhenUpdateItem(Long userId, Long itemId) {
