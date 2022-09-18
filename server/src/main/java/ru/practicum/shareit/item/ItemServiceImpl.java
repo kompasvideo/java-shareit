@@ -125,12 +125,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional()
     @Override
     public CommentDto addComment(long userId, long itemId, Comment comment) {
-        log.info("1");
-        log.info("comment: " + comment);
-        log.info("userId: " + userId);
-        log.info("itemId: " + itemId);
         validateWhenAddComment(userId, itemId, comment);
-        log.info("2");
         comment.setItemId(itemId);
         comment.setCreated(LocalDateTime.now());
         comment.setUser(userRepository.findById(userId).orElseThrow());
@@ -198,23 +193,11 @@ public class ItemServiceImpl implements ItemService {
 
     private void validateWhenSaveItem(ItemDto itemDto, Long userId) {
         checkUserById(userId);
-        if (itemDto.getAvailable() == null) {
-            throw new BadRequestException();
-        }
-        if (itemDto.getName() == null || itemDto.getName().isBlank()) {
-            throw new BadRequestException();
-        }
-        if (itemDto.getDescription() == null || itemDto.getDescription().isBlank()) {
-            throw new BadRequestException();
-        }
     }
 
     private void validateWhenAddComment(Long userId, Long itemId, Comment comment) {
         checkUserById(userId);
         checkItemById(itemId);
-        if (comment.getText().isBlank()) {
-            throw new BadRequestException();
-        }
         if (bookingRepository.findByBookerIdAndItemId(userId, itemId) == null) {
             throw new BadRequestException();
         }

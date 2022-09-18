@@ -10,18 +10,16 @@ import ru.practicum.shareit.client.BaseClient;
 @Service
 public class UserClient extends BaseClient {
 
-    private static final String API_PREFIX = "/users";
-
     @Autowired
     public UserClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
         super(
                 builder
-                        .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))
+                        .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + "/users"))
                         .build()
         );
     }
 
-    public Object addUser(UserDto user) {
+    public Object saveUser(UserDto user) {
         return post("", 0, user);
     }
 
@@ -33,7 +31,7 @@ public class UserClient extends BaseClient {
         return get("/" + userId, userId);
     }
 
-    public Object getAll() {
+    public Object getAllUsers() {
         return get("", 0);
     }
 

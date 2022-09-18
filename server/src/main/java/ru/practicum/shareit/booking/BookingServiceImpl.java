@@ -75,12 +75,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> getAllByCurrentUser(Long userId, String stringState, int from, int size) {
         checkUserById(userId);
-        State state;
-        if (stringState == null) {
-            state = State.ALL;
-        } else if (stringState.isEmpty()) {
-            state = State.ALL;
-        } else state = State.valueOf(stringState);
+        State state = State.valueOf(stringState);
         LocalDateTime now = LocalDateTime.now();
         Page<Booking> resultBookings;
         if (from == size) {
@@ -121,12 +116,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> getAllByOwnedItems(Long userId, String stringState, int from, int size) {
         checkUserById(userId);
-        State state;
-        if (stringState == null) {
-            state = State.ALL;
-        } else if (stringState.isEmpty()) {
-            state = State.ALL;
-        } else state = State.valueOf(stringState);
+        State state = State.valueOf(stringState);
         Page<Booking> resultBookings;
         PageRequest pageRequest = PageRequest.of(from, size);
         LocalDateTime now = LocalDateTime.now();
@@ -161,10 +151,6 @@ public class BookingServiceImpl implements BookingService {
             .map(booking -> modelMapper.map(booking, BookingDto.class)).collect(Collectors.toList());
     }
 
-    private List<BookingDto> getBookingsDto(List<Booking> bookings) {
-        return bookings.stream().map(booking -> modelMapper.map(booking, BookingDto.class)).collect(Collectors.toList());
-    }
-
     private void validateForCreate(BookingCreateDto bookingCreateDto, Long userId) {
         checkUserById(userId);
         checkItemById(bookingCreateDto.getItemId());
@@ -189,10 +175,6 @@ public class BookingServiceImpl implements BookingService {
     private void validateForSetStatus(Long userId, Long bookingId, Boolean approved) {
         checkUserById(userId);
         checkBookingById(bookingId);
-        if (approved == null) {
-            throw new BadRequestException();
-        }
-
         Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
         if (Status.APPROVED.equals(optionalBooking.orElseThrow().getStatus())
             && approved.equals(Boolean.TRUE)) {

@@ -12,15 +12,15 @@ public class ItemDto {
 
     private Integer id;
 
-    @NotEmpty(message = "Name can't be empty")
-    @NotNull(message = "Name can't be null")
+    @NotEmpty(message = "Name пустое")
+    @NotNull(message = "Name равно null")
     private String name;
 
-    @NotEmpty(message = "Description can't be empty")
-    @NotNull(message = "Description can't be null")
+    @NotEmpty(message = "Description пустое")
+    @NotNull(message = "Description равно null")
     private String description;
 
-    @NotNull(message = "Available can't be null")
+    @NotNull(message = "available равно null")
     private Boolean available;
 
     private Integer requestId;

@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.exceptions.BadRequestException;
 import ru.practicum.shareit.exceptions.InternalServerError;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.user.model.User;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,20 +26,15 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User saveUser(User user) {
-        validate(user);
         return emailDuplicate(user);
     }
 
     private User emailDuplicate(User user) {
-        log.info("1");
         List<User> users = userRepository.findAll();
         if (users.stream().anyMatch(userL -> userL.getEmail().equals(user.getEmail()))) {
-            log.info("2");
             userRepository.save(user);
-            log.info("3");
             throw new InternalServerError();
         }
-        log.info("4");
         return userRepository.save(user);
     }
 
@@ -70,16 +63,6 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(long userId) {
         userIdValidate(userId);
         userRepository.deleteById(userId);
-    }
-
-
-    private void validate(@Valid User user) {
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
-            throw new BadRequestException();
-        }
-        if (!user.getEmail().contains("@")) {
-            throw new BadRequestException();
-        }
     }
 
     private void validateForUpdateUser(Long userId, User user) {

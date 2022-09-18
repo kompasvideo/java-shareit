@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-public class RequestDto {
+public class ItemRequestDto {
 
     private int id;
 

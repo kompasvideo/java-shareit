@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.dto;
+package ru.practicum.shareit.booking;
 
 import lombok.Data;
 import ru.practicum.shareit.exception.ValidationException;
@@ -33,7 +33,7 @@ public class BookingDto {
 
     private void validate() {
         if (end.isBefore(start)) {
-            throw new ValidationException("End can't be before start");
+            throw new ValidationException("End не позже start");
         }
     }
 }

@@ -14,18 +14,16 @@ import java.util.Map;
 @Service
 public class ItemClient extends BaseClient {
 
-    private static final String API_PREFIX = "/items";
-
     @Autowired
     public ItemClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
         super(
-                builder
-                        .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))
-                        .build()
+            builder
+                .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + "/items"))
+                .build()
         );
     }
 
-    public Object addItem(ItemDto itemDto, int userId) {
+    public Object add(ItemDto itemDto, long userId) {
         return post("", userId, itemDto);
     }
 
@@ -33,28 +31,28 @@ public class ItemClient extends BaseClient {
         return patch("/" + itemId, userId, itemDto);
     }
 
-    public Object get(int userId, int itemId) {
+    public Object getItem(int userId, int itemId) {
         return get("/" + itemId, userId);
     }
 
-    public Object getAll(int userId, int from, int size) {
+    public Object getAllItem(long userId, int from, int size) {
         Map<String, Object> parameters = Map.of(
-                "from", from,
-                "size", size
+            "from", from,
+            "size", size
         );
         return get("?from={from}&size={size}", (long) userId, parameters);
     }
 
-    public Object getBySearch(String text, int from, int size, int userId) {
+    public Object searchItem(String text, int from, int size, long userId) {
         Map<String, Object> parameters = Map.of(
-                "text", text,
-                "from", from,
-                "size", size
+            "text", text,
+            "from", from,
+            "size", size
         );
         return get("/search?text={text}&from={from}&size={size}", (long) userId, parameters);
     }
 
-    public Object addComment(CommentDto commentDto, int itemId, int userId) {
+    public Object addComment(CommentDto commentDto, long itemId, long userId) {
         return post("/" + itemId + "/comment", userId, commentDto);
     }
 }

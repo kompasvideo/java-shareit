@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.dto.BookingState;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -20,41 +18,42 @@ public class BookingGatewayController {
 
     private final BookingClient bookingClient;
 
+    @GetMapping("/{bookingId}")
+    public Object get(@PathVariable long bookingId, @RequestHeader("X-Sharer-User-Id") long userId) {
+        log.info("BookingGatewayController get bookingId: {}, userId: {}", bookingId, userId);
+        return bookingClient.get(userId, bookingId);
+    }
+
     @PostMapping
-    public Object add(@Valid @RequestBody BookingDto bookingDto,
-                      @RequestHeader("X-Sharer-User-Id") int userId) {
-        log.info("Add new booking by user id: {} to item id: {}", userId, bookingDto.getItemId());
-        return bookingClient.addBooking(userId, bookingDto);
+    public Object create(@Valid @RequestBody BookingDto bookingDto,
+                         @RequestHeader("X-Sharer-User-Id") long userId) {
+        log.info("BookingGatewayController create, userId: {}, itemId: {}", userId, bookingDto.getItemId());
+        return bookingClient.save(userId, bookingDto);
     }
 
     @PatchMapping("/{bookingId}")
-    public Object updateAvailability(@PathVariable int bookingId, @RequestParam boolean approved,
-                                     @RequestHeader("X-Sharer-User-Id") int userId) {
-        log.info("Change availability by user id: {} to booking id: {}", userId, bookingId);
-        return bookingClient.updateAvailability(bookingId, userId, approved);
+    public Object update(@PathVariable long bookingId, @RequestParam Boolean approved,
+                         @RequestHeader("X-Sharer-User-Id") long userId) {
+        log.info("BookingGatewayController update userId: {}, bookingId: {}", userId, bookingId);
+        return bookingClient.update(bookingId, userId, approved);
     }
 
-    @GetMapping("/{bookingId}")
-    public Object getBooking(@PathVariable int bookingId, @RequestHeader("X-Sharer-User-Id") int userId) {
-        log.info("Get booking id: {} by user id: {}", bookingId, userId);
-        return bookingClient.getBooking(userId, bookingId);
-    }
 
     @GetMapping
-    public Object getBookingsByIdAndState(@RequestParam(defaultValue = "ALL") BookingState state,
-                                          @RequestHeader("X-Sharer-User-Id") int userId,
-                                          @Valid @PositiveOrZero @RequestParam(defaultValue = "0") int from,
-                                          @Valid @Positive @RequestParam(defaultValue = "10") int size) {
-        log.info("Get bookings by user id: {}", userId);
+    public Object getAllByCurrentUser(@RequestParam(defaultValue = "ALL") BookingState state,
+                                      @RequestHeader("X-Sharer-User-Id") long userId,
+                                      @Valid @PositiveOrZero @RequestParam(defaultValue = "0") int from,
+                                      @Valid @Positive @RequestParam(defaultValue = "10") int size) {
+        log.info("BookingGatewayController getAllByCurrentUser userId: {}", userId);
         return bookingClient.getBookings("", userId, state, from, size);
     }
 
     @GetMapping("/owner")
-    public Object getBookingByOwner(@RequestParam(defaultValue = "ALL") BookingState state,
-                                    @RequestHeader("X-Sharer-User-Id") int userId,
-                                    @Valid @PositiveOrZero @RequestParam(defaultValue = "0") int from,
-                                    @Valid @Positive @RequestParam(defaultValue = "10") int size) {
-        log.info("Get bookings by owner id: {}", userId);
+    public Object getAllByOwnedItems(@RequestParam(defaultValue = "ALL") BookingState state,
+                                     @RequestHeader("X-Sharer-User-Id") long userId,
+                                     @Valid @PositiveOrZero @RequestParam(defaultValue = "0") int from,
+                                     @Valid @Positive @RequestParam(defaultValue = "10") int size) {
+        log.info("BookingGatewayController getAllByOwnedItems userId: {}", userId);
         return bookingClient.getBookings("/owner", userId, state, from, size);
     }
 }
