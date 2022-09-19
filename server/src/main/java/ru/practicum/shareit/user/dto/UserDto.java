@@ -6,6 +6,7 @@ import javax.validation.constraints.Email;
 
 @Data
 public class UserDto {
+    private Long id;
     private String name;
 
     @Email

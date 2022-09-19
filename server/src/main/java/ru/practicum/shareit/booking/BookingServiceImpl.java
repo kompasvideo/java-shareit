@@ -183,8 +183,8 @@ public class BookingServiceImpl implements BookingService {
         Long id = optionalBooking
             .orElseThrow()
             .getItem().getId();
-        Optional<Item> optionalItem = itemRepository.findById(id);
-        Long ownerId = optionalItem
+        ;
+        Long ownerId = itemRepository.findById(id)
             .orElseThrow()
             .getOwner().getId();
 
@@ -194,23 +194,14 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private void checkUserById(Long userId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) {
-            throw new NotFoundException("Пользователь с id = " + userId + " не найден");
-        }
+        userRepository.findById(userId).orElseThrow(NotFoundException::new);
     }
 
     private void checkItemById(Long itemId) {
-        Optional<Item> optionalItem = itemRepository.findById(itemId);
-        if (optionalItem.isEmpty()) {
-            throw new NotFoundException("Предмет с id = " + itemId + " не найден");
-        }
+        itemRepository.findById(itemId).orElseThrow(NotFoundException::new);
     }
 
     private void checkBookingById(Long bookingId) {
-        Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
-        if (optionalBooking.isEmpty()) {
-            throw new NotFoundException("Бронирование id = " + bookingId + " не найден");
-        }
+        bookingRepository.findById(bookingId).orElseThrow(NotFoundException::new);
     }
 }

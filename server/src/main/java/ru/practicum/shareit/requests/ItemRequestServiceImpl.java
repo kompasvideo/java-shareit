@@ -23,7 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -86,7 +87,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         Page<ItemRequest> itemRequests = itemRequestRepository.findByIdIsNot(userId, pageRequest);
         List<ItemRequestDto> itemRequestDtoList = itemRequests.stream()
             .map(i -> ItemRequestMapper.toItemRequestDto(i))
-            .collect(Collectors.toList());
+            .collect(toList());
         for (ItemRequestDto itemRequestDto : itemRequestDtoList) {
             List<Item> items = itemRepository.findAllByRequestId(itemRequestDto.getId());
             itemRequestDto.setItems(ItemRequestMapper.toItemRequestDtoItem(items));
@@ -102,10 +103,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         Optional<ItemRequest> optionalItemRequest = itemRequestRepository.findById(requestId);
         optionalItemRequest.orElseThrow(NotFoundException::new);
         List<ItemRequest> itemRequests = itemRequestRepository.findAllByRequesterIdOrderByIdAsc(requestId);
-        for (ItemRequest itemRequest : itemRequests) {
-            List<Item> items = itemRepository.findAllByRequestId(itemRequest.getId());
-            itemRequest.setItems(items);
-        }
+        itemRequests.forEach(itemRequest -> itemRequest.setItems(itemRepository.findAllByRequestId(itemRequest.getId())));
         return ItemRequestMapper.toItemRequestDtos(itemRequests).get(0);
     }
 

@@ -26,17 +26,16 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public User saveUser(User user) {
-        return emailDuplicate(user);
-    }
-
-    private User emailDuplicate(User user) {
-        List<User> users = userRepository.findAll();
-        if (users.stream().anyMatch(userL -> userL.getEmail().equals(user.getEmail()))) {
+        if (userRepository.findByEmail(user.getEmail()) != null) {
             userRepository.save(user);
             throw new InternalServerError();
         }
+        log.info(user.getId().toString());
+        log.info(user.getName());
+        log.info(user.getEmail());
         return userRepository.save(user);
     }
+
 
     @Transactional
     @Override
